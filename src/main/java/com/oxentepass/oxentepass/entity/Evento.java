@@ -7,6 +7,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -15,9 +17,8 @@ import lombok.Data;
 
 @Entity
 @Data
-//Caso for fazer eventos com assento marcado
-//@Inheritance(strategy = InheritanceType.JOINED) 
-public class Evento {
+@Inheritance(strategy = InheritanceType.JOINED) 
+public abstract class Evento {
     @Id
     @GeneratedValue
     private long id;
@@ -29,9 +30,6 @@ public class Evento {
     
     @ManyToMany
     private List<Tag> tags;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Subevento> subeventos;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingresso> ingressos;
