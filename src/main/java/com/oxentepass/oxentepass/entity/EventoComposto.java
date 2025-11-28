@@ -10,7 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class EventoComposto extends Evento {
+public class EventoComposto extends Evento { // Aplicação do padrão de projeto Composite
     
     // Talvez não seja necessário cascade
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -24,14 +24,14 @@ public class EventoComposto extends Evento {
     // Métodos
     public void addEvento(EventoSimples evento) {
         if (this.subeventos.contains(evento))
-            throw new SubeventoInvalidoException("O sub-evento já faz parte do evento.");
+            throw new SubeventoInvalidoException("O sub-evento " + evento.getNome() + " já faz parte do evento " + this.getNome() + ".");
 
         this.subeventos.add(evento);
     }
 
     public void removerEvento(EventoSimples evento) {
         if (!this.subeventos.remove(evento))
-            throw new SubeventoInvalidoException("O sub-evento especificado não faz parte do evento.");
+            throw new SubeventoInvalidoException("O sub-evento " + evento.getNome() + " não faz parte do evento " + this.getNome() + ".");
     }
 
     // Getters e Setters (feito manualmente por causa de algum bug do lombok)

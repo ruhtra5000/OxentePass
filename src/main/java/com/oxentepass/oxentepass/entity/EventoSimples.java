@@ -3,6 +3,6 @@ package com.oxentepass.oxentepass.entity;
 import jakarta.persistence.Entity;
 
 @Entity
-public class EventoSimples extends Evento {
+public class EventoSimples extends Evento { // Aplicação do padrão de projeto Composite
     
 }
