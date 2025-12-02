@@ -102,9 +102,19 @@ public abstract class Evento {
         calcularMediaAvaliacao();
     }
 
-    public void removerAvaliacao(Avaliacao avaliacao) {
-        if (!this.avaliacoes.remove(avaliacao)) 
+    public void removerAvaliacao(long idAvaliacao) {
+        Avaliacao busca = null;
+        for (Avaliacao aval : this.avaliacoes) {
+            if (aval.getId() == idAvaliacao) {
+                busca = aval;
+                break;
+            }
+        }
+
+        if (busca == null) 
             throw new AvaliacaoInvalidaException("A avaliação informada não consta no evento " + this.nome + ".");
+
+        avaliacoes.remove(busca);
 
         calcularMediaAvaliacao();
     }
