@@ -34,12 +34,8 @@ public class EventoComposto extends Evento { // Aplicação do padrão de projet
             throw new SubeventoInvalidoException("O sub-evento " + evento.getNome() + " não faz parte do evento " + this.getNome() + ".");
     }
 
-    // Getters e Setters (feito manualmente por causa de algum bug do lombok)
+    // Getter (feito manualmente por causa de algum bug do lombok)
     public List<Evento> getSubeventos() {
         return this.subeventos;
-    }
-
-    public void setSubeventos(List<Evento> subeventos) {
-        this.subeventos = subeventos;
     }
 }
