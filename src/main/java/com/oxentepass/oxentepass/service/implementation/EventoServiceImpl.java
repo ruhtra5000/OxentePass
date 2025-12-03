@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.oxentepass.oxentepass.entity.Avaliacao;
 import com.oxentepass.oxentepass.entity.Evento;
+import com.oxentepass.oxentepass.entity.EventoComposto;
 import com.oxentepass.oxentepass.entity.Ingresso;
 import com.oxentepass.oxentepass.entity.PontoVenda;
 import com.oxentepass.oxentepass.entity.Tag;
@@ -43,12 +45,14 @@ public class EventoServiceImpl implements EventoService {
         Optional<Evento> eventoBusca = eventoRepository.findById(id);
 
         if (eventoBusca.isEmpty())
-            throw new EventoInvalidoException("O evento informado não existe.");
+            throw new EventoInvalidoException("O evento com id " + id + " não existe.");
 
         return eventoBusca.get();
     }
 
     //Métodos da Interface
+
+    // Operações Básicas
     @Override
     public void criarEvento(Evento evento) {
         eventoRepository.save(evento);
@@ -90,6 +94,7 @@ public class EventoServiceImpl implements EventoService {
         eventoRepository.deleteById(idEvento); // Pensar se soft delete faz sentido para evento
     }
 
+    // Tags
     @Override
     public void adicionarTag(long idEvento, long idTag) {
         Evento evento = buscarEventoId(idEvento);
@@ -128,6 +133,7 @@ public class EventoServiceImpl implements EventoService {
         eventoRepository.save(evento);
     }
 
+    // Ingressos
     @Override
     public void adicionarIngresso(long idEvento, Ingresso ingresso) { // Precisa do Service de Ingresso
         // TODO Auto-generated method stub
@@ -140,6 +146,7 @@ public class EventoServiceImpl implements EventoService {
         throw new UnsupportedOperationException("Unimplemented method 'removerIngresso'");
     }
 
+    // Pontos de Venda
     @Override
     public void adicionarPontoVenda(long idEvento, long idPontoVenda) { 
         Evento evento = buscarEventoId(idEvento);
@@ -174,6 +181,7 @@ public class EventoServiceImpl implements EventoService {
         eventoRepository.save(evento);
     }
 
+    // Avaliações
     @Override
     public void adicionarAvaliacao(long idEvento, Avaliacao avaliacao) {
         Evento evento = buscarEventoId(idEvento);
@@ -186,5 +194,50 @@ public class EventoServiceImpl implements EventoService {
         Evento evento = buscarEventoId(idEvento);
 
         evento.removerAvaliacao(idAvaliacao);
+    }
+
+    // Sub-Eventos
+    @Override
+    @Transactional
+    public void criarSubevento(long idEvento, Evento subevento) {
+        Evento evento = buscarEventoId(idEvento);
+        
+        // Definindo a altura da árvore com esse sub-evento incluso
+        subevento.setAltura(evento.getAltura() + 1); 
+
+        if (!(evento instanceof EventoComposto)) 
+            throw new EventoInvalidoException("O evento com id " + idEvento + " não suporta sub-eventos.");
+
+        if(subevento.getAltura() > 5) // Limitação da altura da árvore de sub-eventos
+            throw new EventoInvalidoException("Este evento já atingiu o número máximo de níveis de sub-eventos permitidos (5).");
+        
+        criarEvento(subevento);
+        ((EventoComposto)evento).addSubevento(subevento);
+        eventoRepository.save(evento);
+         
+    }
+
+    @Override
+    public Page<Evento> listarSubeventos(long idEvento, Pageable pageable) {
+        Evento evento = buscarEventoId(idEvento);
+
+        if (!(evento instanceof EventoComposto)) 
+            throw new EventoInvalidoException("O evento com id " + idEvento + " não suporta sub-eventos.");
+    
+        return eventoRepository.findSubeventosByParentId(idEvento, pageable); //Testar
+    }
+
+    @Override
+    @Transactional
+    public void removerSubevento(long idEvento, long idSubevento) {
+        Evento evento = buscarEventoId(idEvento);
+        Evento subEvento = buscarEventoId(idSubevento);
+
+        if (!(evento instanceof EventoComposto))  
+            throw new EventoInvalidoException("O evento com id " + idEvento + " não suporta sub-eventos.");
+
+        ((EventoComposto)evento).removerSubevento(subEvento);
+        deletarEvento(idSubevento);
+        eventoRepository.save(evento);
     }
 }
