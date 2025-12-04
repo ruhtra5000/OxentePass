@@ -56,7 +56,7 @@ public abstract class Evento {
 
     private double mediaAvaliacao;
 
-    private double altura; // Atributo para limitar possível árvore de sub-eventos
+    private int altura; // Atributo para limitar possível árvore de sub-eventos
 
     //Métodos
     public void addTag(Tag tag) {
