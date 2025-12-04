@@ -116,8 +116,7 @@ public class EventoServiceImpl implements EventoService {
 
     // Tags
     @Override
-    // Adicionar tag existente
-    public void adicionarTag(long idEvento, long idTag) {
+    public void adicionarTagExistente(long idEvento, long idTag) {
         Evento evento = buscarEventoId(idEvento);
 
         Optional<Tag> tagBusca = tagRepository.findById(idTag);
@@ -132,8 +131,7 @@ public class EventoServiceImpl implements EventoService {
 
     @Override
     @Transactional 
-    // Adicionar nova tag
-    public void adicionarTag(long idEvento, Tag tag) {
+    public void adicionarTagNova(long idEvento, Tag tag) {
         Evento evento = buscarEventoId(idEvento);
 
         tagService.criarTag(tag);
@@ -171,8 +169,7 @@ public class EventoServiceImpl implements EventoService {
 
     // Pontos de Venda
     @Override
-    // Adicionar ponto de venda existente
-    public void adicionarPontoVenda(long idEvento, long idPontoVenda) { 
+    public void adicionarPontoVendaExistente(long idEvento, long idPontoVenda) { 
         Evento evento = buscarEventoId(idEvento);
 
         Optional<PontoVenda> pontoVendaBusca = pontoVendaRepository.findById(idPontoVenda);
@@ -186,8 +183,7 @@ public class EventoServiceImpl implements EventoService {
     }
 
     @Override
-    // Adicionar ponto de venda existente
-    public void adicionarPontoVenda(long idEvento, PontoVenda pontoVenda) { //Precisa do Service de PontoVenda
+    public void adicionarPontoVendaNovo(long idEvento, PontoVenda pontoVenda) { //Precisa do Service de PontoVenda
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'adicionarPontoVenda'");
     }
