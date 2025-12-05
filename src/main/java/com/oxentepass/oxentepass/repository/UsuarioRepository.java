@@ -31,6 +31,7 @@ public interface UsuarioRepository extends
 
         bindings.bind(root.email).first((StringPath path, String value) -> path.equalsIgnoreCase(value));
 
+        bindings.excludeUnlistedProperties(true);
     }
 
 }
