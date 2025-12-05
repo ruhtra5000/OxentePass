@@ -108,10 +108,8 @@ public class EventoServiceImpl implements EventoService {
 
     @Override
     public void deletarEvento(long idEvento) {
-        if(!eventoRepository.existsById(idEvento))
-            throw new EventoInvalidoException("O evento a ser deletado não existe.");
-
-        eventoRepository.deleteById(idEvento); // Pensar se soft delete faz sentido para evento
+        Evento evento = buscarEventoId(idEvento);
+        eventoRepository.delete(evento); // Pensar se soft delete faz sentido para evento
     }
 
     // Tags
@@ -247,7 +245,7 @@ public class EventoServiceImpl implements EventoService {
     
         return this.paraDTOPage(
             eventoRepository.findSubeventosByParentId(idEvento, pageable)
-        ); //Testar
+        );
     }
 
     @Override
