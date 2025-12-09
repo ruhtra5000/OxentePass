@@ -107,10 +107,7 @@ public class EventoServiceImpl implements EventoService {
             throw new EventoInvalidoException("A data e hora de início do evento deve ser anterior a de fim.");
 
         if (eventoRepository.isSubevento(idEvento)) {
-            System.out.println("\n\nÉ SUBEVENTO\n\n");
             Evento eventoPai = eventoRepository.findEventoPaiBySubeventoId(idEvento).get();
-
-            System.out.println("\n\nPAI: " + eventoPai.getId() + "\n\n");
             
             if(checagemDataSubevento(eventoPai, evento))
                 throw new EventoInvalidoException("O horário do sub-evento precisa estar dentro do horário do evento principal.");
