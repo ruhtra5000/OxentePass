@@ -1,5 +1,6 @@
 package com.oxentepass.oxentepass.service.implementation;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,11 +67,24 @@ public class EventoServiceImpl implements EventoService {
         );
     }
 
+    // Checagem de data para eventos
+    private boolean checagemDataEvento(Evento evento) {
+        return evento.getDataHoraInicio().isAfter(evento.getDataHoraFim());
+    }
+
+    // Checagem de data para sub-eventos (devem estar dentro do período de ocorrência do evento pai)
+    private boolean checagemDataSubevento(Evento evento, Evento subevento) {
+        return (subevento.getDataHoraInicio().isBefore(evento.getDataHoraInicio()) || subevento.getDataHoraFim().isAfter(evento.getDataHoraFim()));
+    }
+
     //Métodos da Interface
 
     // Operações Básicas
     @Override
     public void criarEvento(Evento evento) {
+        if(checagemDataEvento(evento))
+            throw new EventoInvalidoException("A data e hora de início do evento deve ser anterior a de fim.");
+
         eventoRepository.save(evento);
     }
 
@@ -90,6 +104,19 @@ public class EventoServiceImpl implements EventoService {
 
     @Override
     public void editarEvento(Long idEvento, Evento evento) {
+        if(checagemDataEvento(evento))
+            throw new EventoInvalidoException("A data e hora de início do evento deve ser anterior a de fim.");
+
+        if (eventoRepository.isSubevento(idEvento)) {
+            System.out.println("\n\nÉ SUBEVENTO\n\n");
+            Evento eventoPai = eventoRepository.findEventoPaiBySubeventoId(idEvento).get();
+
+            System.out.println("\n\nPAI: " + eventoPai.getId() + "\n\n");
+            
+            if(checagemDataSubevento(eventoPai, evento))
+                throw new EventoInvalidoException("O horário do sub-evento precisa estar dentro do horário do evento principal.");
+        }
+
         Evento eventoEdicao = buscarEventoId(idEvento);
 
         // Atributos modificados pela "edição padrão"
@@ -229,11 +256,13 @@ public class EventoServiceImpl implements EventoService {
 
         if(subevento.getAltura() > 5) // Limitação da altura da árvore de sub-eventos
             throw new EventoInvalidoException("Este evento já atingiu o número máximo de níveis de sub-eventos permitidos (5).");
+
+        if (checagemDataSubevento(evento, subevento))
+            throw new EventoInvalidoException("O horário do sub-evento precisa estar dentro do horário do evento principal.");
         
         criarEvento(subevento);
         ((EventoComposto)evento).addSubevento(subevento);
-        eventoRepository.save(evento);
-         
+        eventoRepository.save(evento);  
     }
 
     @Override
