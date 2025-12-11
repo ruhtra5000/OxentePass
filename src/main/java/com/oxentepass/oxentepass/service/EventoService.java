@@ -8,20 +8,17 @@ import com.oxentepass.oxentepass.entity.Avaliacao;
 import com.oxentepass.oxentepass.entity.Evento;
 import com.oxentepass.oxentepass.entity.Ingresso;
 import com.oxentepass.oxentepass.entity.PontoVenda;
-import com.oxentepass.oxentepass.entity.Tag;
+import com.oxentepass.oxentepass.service.outrasInterfaces.TagManipulacao;
 import com.querydsl.core.types.Predicate;
 
-public interface EventoService {
+public interface EventoService extends TagManipulacao {
     // Operações Básicas
     public void criarEvento(Evento evento);
     public Page<EventoResponse> listarEventos(Pageable pageable);
     public Page<EventoResponse> listarEventosFiltro (Predicate predicate, Pageable pageable);
     public void editarEvento(Long idEvento, Evento evento);
     public void deletarEvento(long idEvento);
-    // Tags
-    public void adicionarTagExistente(long idEvento, long idTag); // Adição de Tag existente
-    public void adicionarTagNova(long idEvento, Tag tag);    // Criação de nova Tag
-    public void removerTag(long idEvento, long idTag);
+    // Tags -> TagManipulacao
     // Ingressos
     public void adicionarIngresso(long idEvento, Ingresso ingresso);
     public void removerIngresso(long idEvento, long idIngresso);
