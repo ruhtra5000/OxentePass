@@ -19,6 +19,9 @@ import com.querydsl.core.types.dsl.StringPath;
 public interface CidadeRepository extends JpaRepository<Cidade, Long>,
                                           QuerydslPredicateExecutor<Cidade>,
                                           QuerydslBinderCustomizer<QCidade> {
+                                        
+    Optional<Cidade> findByNome(String nome); // <- Correspondencia exata de nome
+                                            
     @Override
     default void customize(QuerydslBindings bindings, QCidade root) {
         // Bind para ID
