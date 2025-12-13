@@ -59,4 +59,21 @@ public class Venda {
         
         this.valorTotal = valorTotal;
     }
+
+    public void setFinalizada(boolean finalizada) {
+        if(finalizada) {
+            this.dataHoraVenda = LocalDateTime.now();
+            calcularValorTotal();
+        } else {
+            this.dataHoraVenda = null;
+            this.valorTotal = BigDecimal.ZERO;
+        }
+    }
+
+    public void setCancelada(boolean cancelada) {
+        if(cancelada) {
+            this.dataHoraVenda = null;
+            this.valorTotal = BigDecimal.ZERO;
+        }
+    }
 }

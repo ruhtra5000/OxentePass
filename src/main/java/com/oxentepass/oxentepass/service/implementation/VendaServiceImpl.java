@@ -1,0 +1,80 @@
+package com.oxentepass.oxentepass.service.implementation;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import com.oxentepass.oxentepass.entity.IngressoVenda;
+import com.oxentepass.oxentepass.entity.Pagamento;
+import com.oxentepass.oxentepass.entity.Venda;
+import com.oxentepass.oxentepass.repository.VendaRepository;
+import com.oxentepass.oxentepass.service.VendaService;
+
+@Service
+public class VendaServiceImpl implements VendaService {
+
+   @Autowired
+   private VendaRepository vendaRepository;
+
+   @Override
+   public void criarVenda(Venda venda){
+    vendaRepository.save(venda);
+   }
+
+   @Override
+   public Venda finalizarVenda(long id){
+    Venda venda = buscarVendaPorId(id);
+    venda.setFinalizada(true);
+    return vendaRepository.save(venda);
+   }
+   
+   @Override
+    public Page<Venda> listarTodasVendas(Pageable pageable) {
+        return vendaRepository.findAll(pageable);
+    }
+
+   @Override
+    public void cancelarVenda(long id) {
+        Venda venda = buscarVendaPorId(id);
+        venda.setCancelada(true);
+        vendaRepository.save(venda);
+    }
+
+    @Override
+    public Venda buscarVendaPorId(long id) {
+        Optional<Venda> venda = vendaRepository.findById(id);
+        if (venda.isEmpty()) {
+            throw new RuntimeException("Venda não encontrada com o ID: " + id);
+        }
+        return venda.get();
+    }
+
+    @Override
+    public Page<Venda> buscarVendaPorUsuario(Long idUsuario, Pageable pageable) {
+        return vendaRepository.findByUsuarioId(idUsuario, pageable);
+    }
+
+    @Override
+    public Venda confirmarPagamento(long id, Pagamento pagamento) {
+        Venda venda = buscarVendaPorId(id);
+        venda.setPagamento(pagamento);
+        return vendaRepository.save(venda);
+    }
+
+    @Override
+    public Venda adicionarIngresso(IngressoVenda ingressoVenda, long id) {
+        Venda venda = buscarVendaPorId(id);
+        venda.addIngresso(ingressoVenda);
+        return vendaRepository.save(venda);
+    }
+
+    @Override
+    public Venda removerIngresso(IngressoVenda ingressoVenda, long id) {
+        Venda venda = buscarVendaPorId(id);
+        venda.removerIngresso(ingressoVenda);
+        return vendaRepository.save(venda);
+    }
+
+}
