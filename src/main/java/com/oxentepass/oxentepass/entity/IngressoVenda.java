@@ -2,7 +2,7 @@ package com.oxentepass.oxentepass.entity;
 
 import java.math.BigDecimal;
 
-import com.oxentepass.oxentepass.exceptions.IngressoInvalidoException;
+import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,16 +27,16 @@ public class IngressoVenda {
     // Setters
     public void setQuantidade(int quantidade) {
         if (quantidade > this.ingresso.getQuantidadeDisponivel()) 
-            throw new IngressoInvalidoException("Quantidade de ingressos inválida.");
+            throw new EstadoInvalidoException("Quantidade de ingressos inválida.");
 
         this.quantidade = quantidade;
     }
 
     public void setMeiaEntrada(boolean meiaEntrada) {
-        if (meiaEntrada && this.ingresso.isTemMeiaEntrada()) 
-            throw new IngressoInvalidoException("Este tipo de ingresso não suporta meia entrada.");
+        if (meiaEntrada && !this.ingresso.isTemMeiaEntrada()) 
+            throw new EstadoInvalidoException("O tipo de ingresso " + ingresso.getTipo() +  " não suporta meia entrada.");
 
-        this.meiaEntrada = false;
+        this.meiaEntrada = meiaEntrada;
     }
 
     public void calcularValorTotal() {

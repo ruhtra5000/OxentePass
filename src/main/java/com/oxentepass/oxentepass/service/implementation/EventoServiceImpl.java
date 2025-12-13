@@ -17,9 +17,9 @@ import com.oxentepass.oxentepass.entity.EventoComposto;
 import com.oxentepass.oxentepass.entity.Ingresso;
 import com.oxentepass.oxentepass.entity.PontoVenda;
 import com.oxentepass.oxentepass.entity.Tag;
-import com.oxentepass.oxentepass.exceptions.EventoInvalidoException;
-import com.oxentepass.oxentepass.exceptions.PontoVendaInvalidoException;
-import com.oxentepass.oxentepass.exceptions.TagInvalidaException;
+import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
+import com.oxentepass.oxentepass.exceptions.OperacaoProibidaException;
+import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.EventoRepository;
 import com.oxentepass.oxentepass.repository.PontoVendaRepository;
 import com.oxentepass.oxentepass.repository.TagRepository;
@@ -48,7 +48,7 @@ public class EventoServiceImpl implements EventoService {
         Optional<Evento> eventoBusca = eventoRepository.findById(id);
 
         if (eventoBusca.isEmpty())
-            throw new EventoInvalidoException("O evento com id " + id + " não existe.");
+            throw new RecursoNaoEncontradoException("O evento com id " + id + " não existe.");
 
         return eventoBusca.get();
     }
@@ -82,7 +82,7 @@ public class EventoServiceImpl implements EventoService {
     @Override
     public void criarEvento(Evento evento) {
         if(checagemDataEvento(evento))
-            throw new EventoInvalidoException("A data e hora de início do evento deve ser anterior a de fim.");
+            throw new EstadoInvalidoException("A data e hora de início do evento deve ser anterior a de fim.");
 
         eventoRepository.save(evento);
     }
@@ -104,13 +104,13 @@ public class EventoServiceImpl implements EventoService {
     @Override
     public void editarEvento(Long idEvento, Evento evento) {
         if(checagemDataEvento(evento))
-            throw new EventoInvalidoException("A data e hora de início do evento deve ser anterior a de fim.");
+            throw new EstadoInvalidoException("A data e hora de início do evento deve ser anterior a de fim.");
 
         if (eventoRepository.isSubevento(idEvento)) {
             Evento eventoPai = eventoRepository.findEventoPaiBySubeventoId(idEvento).get();
             
             if(checagemDataSubevento(eventoPai, evento))
-                throw new EventoInvalidoException("O horário do sub-evento precisa estar dentro do horário do evento principal.");
+                throw new EstadoInvalidoException("O horário do sub-evento precisa estar dentro do horário do evento principal.");
         }
 
         Evento eventoEdicao = buscarEventoId(idEvento);
@@ -142,7 +142,7 @@ public class EventoServiceImpl implements EventoService {
 
         Optional<Tag> tagBusca = tagRepository.findById(idTag);
         if (tagBusca.isEmpty())
-            throw new TagInvalidaException("A tag informada não existe.");
+            throw new RecursoNaoEncontradoException("A tag informada não existe.");
 
         Tag tag = tagBusca.get();
 
@@ -167,7 +167,7 @@ public class EventoServiceImpl implements EventoService {
 
         Optional<Tag> tagBusca = tagRepository.findById(idTag);
         if (tagBusca.isEmpty())
-            throw new TagInvalidaException("A tag informada não existe.");
+            throw new RecursoNaoEncontradoException("A tag informada não existe.");
 
         Tag tag = tagBusca.get();
 
@@ -195,7 +195,7 @@ public class EventoServiceImpl implements EventoService {
 
         Optional<PontoVenda> pontoVendaBusca = pontoVendaRepository.findById(idPontoVenda);
         if(pontoVendaBusca.isEmpty())
-            throw new PontoVendaInvalidoException("O ponto de venda informado não existe.");
+            throw new RecursoNaoEncontradoException("O ponto de venda informado não existe.");
 
         PontoVenda pontoVenda = pontoVendaBusca.get();
 
@@ -215,7 +215,7 @@ public class EventoServiceImpl implements EventoService {
 
         Optional<PontoVenda> pontoVendaBusca = pontoVendaRepository.findById(idPontoVenda);
         if (pontoVendaBusca.isEmpty())
-            throw new PontoVendaInvalidoException("O ponto de venda informado não está vinculado ao evento " + evento.getNome() + ".");
+            throw new RecursoNaoEncontradoException("O ponto de venda informado não está vinculado ao evento " + evento.getNome() + ".");
 
         PontoVenda pontoVenda = pontoVendaBusca.get();
 
@@ -248,13 +248,13 @@ public class EventoServiceImpl implements EventoService {
         subevento.setAltura(evento.getAltura() + 1); 
 
         if (!(evento instanceof EventoComposto)) 
-            throw new EventoInvalidoException("O evento com id " + idEvento + " não suporta sub-eventos.");
+            throw new OperacaoProibidaException("O evento com id " + idEvento + " não suporta sub-eventos.");
 
         if(subevento.getAltura() > 5) // Limitação da altura da árvore de sub-eventos
-            throw new EventoInvalidoException("Este evento já atingiu o número máximo de níveis de sub-eventos permitidos (5).");
+            throw new EstadoInvalidoException("Este evento já atingiu o número máximo de níveis de sub-eventos permitidos (5).");
 
         if (checagemDataSubevento(evento, subevento))
-            throw new EventoInvalidoException("O horário do sub-evento precisa estar dentro do horário do evento principal.");
+            throw new EstadoInvalidoException("O horário do sub-evento precisa estar dentro do horário do evento principal.");
         
         criarEvento(subevento);
         ((EventoComposto)evento).addSubevento(subevento);
@@ -266,7 +266,7 @@ public class EventoServiceImpl implements EventoService {
         Evento evento = buscarEventoId(idEvento);
 
         if (!(evento instanceof EventoComposto)) 
-            throw new EventoInvalidoException("O evento com id " + idEvento + " não suporta sub-eventos.");
+            throw new OperacaoProibidaException("O evento com id " + idEvento + " não suporta sub-eventos.");
     
         return this.paraDTOPage(
             eventoRepository.findSubeventosByParentId(idEvento, pageable)
@@ -280,7 +280,7 @@ public class EventoServiceImpl implements EventoService {
         Evento subEvento = buscarEventoId(idSubevento);
 
         if (!(evento instanceof EventoComposto))  
-            throw new EventoInvalidoException("O evento com id " + idEvento + " não suporta sub-eventos.");
+            throw new OperacaoProibidaException("O evento com id " + idEvento + " não suporta sub-eventos.");
 
         ((EventoComposto)evento).removerSubevento(subEvento);
         deletarEvento(idSubevento);

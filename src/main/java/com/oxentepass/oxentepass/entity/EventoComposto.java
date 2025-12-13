@@ -3,7 +3,8 @@ package com.oxentepass.oxentepass.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.oxentepass.oxentepass.exceptions.SubeventoInvalidoException;
+import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
+import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -24,14 +25,14 @@ public class EventoComposto extends Evento { // Aplicação do padrão de projet
     // Métodos
     public void addSubevento(Evento evento) {
         if (this.subeventos.contains(evento))
-            throw new SubeventoInvalidoException("O sub-evento " + evento.getNome() + " já faz parte do evento " + this.getNome() + ".");
+            throw new EstadoInvalidoException("O sub-evento " + evento.getNome() + " já faz parte do evento " + this.getNome() + ".");
 
         this.subeventos.add(evento);
     }
 
     public void removerSubevento(Evento evento) {
         if (!this.subeventos.remove(evento))
-            throw new SubeventoInvalidoException("O sub-evento " + evento.getNome() + " não faz parte do evento " + this.getNome() + ".");
+            throw new RecursoNaoEncontradoException("O sub-evento " + evento.getNome() + " não faz parte do evento " + this.getNome() + ".");
     }
 
     // Getter (feito manualmente por causa de algum bug do lombok)

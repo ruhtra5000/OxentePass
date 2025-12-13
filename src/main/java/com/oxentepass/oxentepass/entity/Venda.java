@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.oxentepass.oxentepass.exceptions.IngressoInvalidoException;
+import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,7 +48,7 @@ public class Venda {
         boolean resultado = this.ingressos.remove(ingressoVenda);
 
         if (!resultado)
-            throw new IngressoInvalidoException("Este ingresso não se encontra na venda!");
+            throw new RecursoNaoEncontradoException("Este ingresso não se encontra na venda!");
     }
 
     public void calcularValorTotal() {

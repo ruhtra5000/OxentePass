@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.oxentepass.oxentepass.entity.Evento;
 import com.oxentepass.oxentepass.entity.EventoSimples;
-import com.oxentepass.oxentepass.exceptions.EventoInvalidoException;
+import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 import com.oxentepass.oxentepass.repository.EventoRepository;
 
 @SpringBootTest
@@ -53,7 +53,7 @@ public class EventoServiceTest {
         evento.setDataHoraInicio(LocalDateTime.now().minus(10L, ChronoUnit.HOURS));
         evento.setDataHoraFim(LocalDateTime.now().minus(20L, ChronoUnit.HOURS));
 
-        assertThrows(EventoInvalidoException.class, () -> {
+        assertThrows(EstadoInvalidoException.class, () -> {
             eventoService.criarEvento(evento);
         });
 

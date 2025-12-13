@@ -2,7 +2,8 @@ package com.oxentepass.oxentepass.entity;
 
 import java.util.List;
 
-import com.oxentepass.oxentepass.exceptions.TagInvalidaException;
+import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
+import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,25 +30,25 @@ public class Cidade {
     //Métodos
     public void addTag(Tag tag) {
         if (this.tags.contains(tag))
-            throw new TagInvalidaException("A tag informada já consta na cidade " + this.nome + ".");
+            throw new EstadoInvalidoException("A tag informada já consta na cidade " + this.nome + ".");
 
         this.tags.add(tag);
     }
 
     public void removerTag(Tag tag) {
         if (!this.tags.remove(tag)) 
-            throw new TagInvalidaException("A tag informada não consta na cidade " + this.nome + ".");
+            throw new RecursoNaoEncontradoException("A tag informada não consta na cidade " + this.nome + ".");
     }
 
     public void addEvento(Evento evento) {
         if (this.eventos.contains(evento))
-            throw new TagInvalidaException("O evento informado já se encontra vinculado a cidade " + this.nome + ".");
+            throw new EstadoInvalidoException("O evento informado já se encontra vinculado a cidade " + this.nome + ".");
 
         this.eventos.add(evento);
     }
 
     public void removerEvento(Evento evento) {
         if (!this.eventos.remove(evento))
-            throw new TagInvalidaException("O evento informado não se encontra vinculado a cidade " + this.nome + ".");
+            throw new RecursoNaoEncontradoException("O evento informado não se encontra vinculado a cidade " + this.nome + ".");
     }
 }
