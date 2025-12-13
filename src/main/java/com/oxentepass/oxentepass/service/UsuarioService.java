@@ -10,6 +10,4 @@ public interface UsuarioService {
 
     public void atualizarDadosUsuario(Long id, Usuario dados);
 
-    public void atualizarSenhaUsuario(Long id, String senha);
-
 }
