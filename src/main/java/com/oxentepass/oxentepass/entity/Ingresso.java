@@ -2,7 +2,7 @@ package com.oxentepass.oxentepass.entity;
 
 import java.math.BigDecimal;
 
-import com.oxentepass.oxentepass.exceptions.IngressoInvalidoException;
+import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,7 +23,7 @@ public class Ingresso {
     // Métodos
     public void reduzirQuantidade(int quantidade) {
         if (quantidade > quantidadeDisponivel) 
-            throw new IngressoInvalidoException("Quantidade de ingressos inválida.");
+            throw new EstadoInvalidoException("Quantidade de ingressos inválida.");
 
         this.quantidadeDisponivel -= quantidade;
     }

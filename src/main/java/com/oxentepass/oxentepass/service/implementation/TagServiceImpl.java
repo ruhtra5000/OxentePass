@@ -8,7 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.oxentepass.oxentepass.entity.Tag;
-import com.oxentepass.oxentepass.exceptions.TagInvalidaException;
+import com.oxentepass.oxentepass.exceptions.RecursoDuplicadoException;
+import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.TagRepository;
 import com.oxentepass.oxentepass.service.TagService;
 import com.querydsl.core.types.Predicate;
@@ -24,7 +25,7 @@ public class TagServiceImpl implements TagService {
         Optional<Tag> tagBusca = tagRepository.findByTag(tag.getTag());
 
         if (tagBusca.isPresent())
-            throw new TagInvalidaException("A tag informada já existe.");
+            throw new RecursoDuplicadoException("A tag informada já existe.");
 
         tagRepository.save(tag);
     }
@@ -42,7 +43,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void deletarTag(long id) {
         if(!tagRepository.existsById(id))
-            throw new TagInvalidaException("A tag informada não existe.");
+            throw new RecursoNaoEncontradoException("A tag informada não existe.");
 
         tagRepository.deleteById(id);
     }
