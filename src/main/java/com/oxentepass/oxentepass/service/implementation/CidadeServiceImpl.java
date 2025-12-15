@@ -72,7 +72,8 @@ public class CidadeServiceImpl implements CidadeService {
     public void editarCidade(long idCidade, Cidade cidade) {
         Cidade cidadeEdicao = buscarCidadePorId(idCidade);
         
-        verificarCidadePorNome(cidade);
+        if (!cidadeEdicao.getNome().equals(cidade.getNome()))
+            verificarCidadePorNome(cidade);
 
         //Atributos modificados pela "edição padrão"
         cidadeEdicao.setNome(cidade.getNome());             //Nome
