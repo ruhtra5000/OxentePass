@@ -48,8 +48,4 @@ public class IngressoVenda {
         this.valorTotal = valorUnidade.multiply(new BigDecimal(this.quantidade));
     }
 
-    public Ingresso getIngresso() {
-        return this.ingresso;
-    }
-
 }

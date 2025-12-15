@@ -38,13 +38,6 @@ public class Venda {
 
     @Enumerated(EnumType.STRING)
     private StatusVenda status;
-
-    public enum StatusVenda {
-        ABERTA,
-        FINALIZADA,
-        CANCELADA
-    }
-
     // Construtor
     public Venda () {
         this.ingressos = new ArrayList<IngressoVenda>();
