@@ -33,7 +33,7 @@ public abstract class Evento {
     private Organizador organizador;
 
     @ManyToOne
-    Cidade cidade;
+    private Cidade cidade;
     
     @ManyToMany
     private List<Tag> tags;

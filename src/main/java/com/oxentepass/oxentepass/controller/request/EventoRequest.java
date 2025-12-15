@@ -25,7 +25,7 @@ public record EventoRequest(
     @NotNull(message = "O evento deve contar com um organizador.")
     Organizador organizador,
 
-    @NotNull(message = "O evento deve contar com uma cidade.")
+    @NotNull(message = "O evento deve contar com uma cidade sede.")
     Cidade cidade,
     
     @FutureOrPresent(message = "O campo \"dataHoraInicio\" deve estar no presente ou futuro.")
