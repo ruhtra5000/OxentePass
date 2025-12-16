@@ -13,5 +13,4 @@ public interface IngressoService {
     public Ingresso buscarIngressoPorId(Long id);
     public Ingresso buscarIngressPorTipo(String tipo);
     public Page<Ingresso> ingressosDisponiveis(Long idEvento, Pageable pageable);
-    
 }

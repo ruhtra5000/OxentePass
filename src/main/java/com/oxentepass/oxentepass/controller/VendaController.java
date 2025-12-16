@@ -20,8 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/venda")
@@ -33,48 +31,71 @@ public class VendaController {
     @PostMapping("/criar")
     public ResponseEntity<String> criarVenda(@RequestBody @Valid VendaRequest dto) {
         vendaService.criarVenda(dto.paraEntidade());
-        return new ResponseEntity<String>("Venda criada com sucesso!", HttpStatus.CREATED);
+
+        return new ResponseEntity<String>(
+            "Venda criada com sucesso!", 
+            HttpStatus.CREATED
+        );
     }
 
     @PostMapping("/finalizar/{id}")
     public ResponseEntity<String> finalizarVenda(@PathVariable long id) {
         vendaService.finalizarVenda(id);
-        return new ResponseEntity<String>("Venda finalizada com sucesso!", HttpStatus.OK);
+
+        return new ResponseEntity<String>(
+            "Venda finalizada com sucesso!", 
+            HttpStatus.OK
+        );
     }
 
     @GetMapping("/listar")
     public ResponseEntity<Page<Venda>> listarTodasVendas(Pageable pageable) {
-        return new ResponseEntity<Page<Venda>>(vendaService.listarTodasVendas(pageable), HttpStatus.OK);
+        return new ResponseEntity<Page<Venda>>(
+            vendaService.listarTodasVendas(pageable), 
+            HttpStatus.OK
+        );
     }    
 
     @PostMapping("/cancelar/{id}")
     public ResponseEntity<String> cancelarVenda(@PathVariable long id) {
         vendaService.cancelarVenda(id);
-        return new ResponseEntity<String>("Venda cancelada com sucesso!", HttpStatus.OK);
+
+        return new ResponseEntity<String>(
+            "Venda cancelada com sucesso!", 
+            HttpStatus.OK
+        );
     }
 
     @PutMapping("/adicionaringresso/{id}")
     public ResponseEntity<Venda> adicionarIngresso(@PathVariable Long id, @RequestBody IngressoVenda ingressoVenda) {
-
         Venda vendaAtualizada = vendaService.adicionarIngresso(ingressoVenda, id);
+        
         return ResponseEntity.ok(vendaAtualizada);
     }
 
     @PutMapping("/removeringresso/{id}")
     public ResponseEntity<Venda> removerIngresso(@RequestBody @Valid VendaRequest dto, @PathVariable long id) {
         Venda vendaAtualizada = vendaService.removerIngresso(dto.getIngressos().get(0), id);
-        return new ResponseEntity<Venda>(vendaAtualizada, HttpStatus.OK);
+        
+        return new ResponseEntity<Venda>(
+            vendaAtualizada, 
+            HttpStatus.OK
+        );
     }
     
     @GetMapping("/buscar/{id}")
     public ResponseEntity<Venda> buscarVendaPorId(@PathVariable long id) {
-        return new ResponseEntity<Venda>(vendaService.buscarVendaPorId(id), HttpStatus.OK);
+        return new ResponseEntity<Venda>(
+            vendaService.buscarVendaPorId(id), 
+            HttpStatus.OK
+        );
     }
 
     @GetMapping("/buscar/usuario/{idUsuario}")
     public ResponseEntity<Page<Venda>> buscarVendaPorUsuario(@PathVariable Long idUsuario, Pageable pageable) {
-        return new ResponseEntity<Page<Venda>>(vendaService.buscarVendaPorUsuario(idUsuario, pageable), HttpStatus.OK);
+        return new ResponseEntity<Page<Venda>>(
+            vendaService.buscarVendaPorUsuario(idUsuario, pageable), 
+            HttpStatus.OK
+        );
     }
-    
-
 }

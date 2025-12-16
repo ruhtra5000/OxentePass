@@ -29,35 +29,53 @@ public class IngressoController {
     
     //Operações Básicas
     @PostMapping("/cadastro")
-    public ResponseEntity<String> cadatrarIngresso (@RequestBody @Valid IngressoRequest dto) {
+    public ResponseEntity<String> cadastrarIngresso (@RequestBody @Valid IngressoRequest dto) {
         ingressoService.cadastrarIngresso(dto.paraEntidade());
-        return new ResponseEntity<String>("Ingresso simples criado com sucesso!", HttpStatus.CREATED);
+
+        return new ResponseEntity<String>(
+            "Ingresso criado com sucesso!", 
+            HttpStatus.CREATED
+        );
     }
 
     @DeleteMapping("/deletar/{idIngresso}")
     public ResponseEntity<String> deletarIngresso (@PathVariable Long idIngresso) {
         ingressoService.deletarIngresso(idIngresso);
-        return new ResponseEntity<String>("Ingresso deletado com sucesso!", HttpStatus.OK);
+        return new ResponseEntity<String>(
+            "Ingresso deletado com sucesso!", 
+            HttpStatus.OK
+        );
     }
 
     @GetMapping("/listar")
     public ResponseEntity<Page<Ingresso>> listarTodosIngressos (Pageable pageable) {
-        return new ResponseEntity<Page<Ingresso>>(ingressoService.listarTodosIngressos(pageable), HttpStatus.OK);
+        return new ResponseEntity<Page<Ingresso>>(
+            ingressoService.listarTodosIngressos(pageable), 
+            HttpStatus.OK
+        );
     }
 
     @GetMapping("/buscar/{idIngresso}")
     public ResponseEntity<Ingresso> buscarIngressoPorId (@PathVariable Long idIngresso) {
-        return new ResponseEntity<Ingresso>(ingressoService.buscarIngressoPorId(idIngresso), HttpStatus.OK);
+        return new ResponseEntity<Ingresso>(
+            ingressoService.buscarIngressoPorId(idIngresso), 
+            HttpStatus.OK
+        );
     }
 
     @GetMapping("/buscar/tipo/{tipoIngresso}")
     public ResponseEntity<Ingresso> buscarIngressoPorTipo (@PathVariable String tipoIngresso) {
-        return new ResponseEntity<Ingresso>(ingressoService.buscarIngressPorTipo(tipoIngresso), HttpStatus.OK);
+        return new ResponseEntity<Ingresso>(
+            ingressoService.buscarIngressPorTipo(tipoIngresso), 
+            HttpStatus.OK
+        );
     }
 
     @GetMapping("/disponivel/{idEvento}")
     public ResponseEntity<Page<Ingresso>> quantidadeIngressosDisponiveis (@PathVariable Long idEvento, Pageable pageable) {
-        return new ResponseEntity<Page<Ingresso>>(ingressoService.ingressosDisponiveis(idEvento, pageable), HttpStatus.OK);
+        return new ResponseEntity<Page<Ingresso>>(
+            ingressoService.ingressosDisponiveis(idEvento, pageable), 
+            HttpStatus.OK
+        );
     }
-
 }

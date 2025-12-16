@@ -36,20 +36,19 @@ public class IngressoServiceImpl implements IngressoService {
     public Ingresso buscarIngressoPorId(Long id) {
         Optional<Ingresso> ingressoBusca = ingressoRepository.findById(id);
 
-        if (ingressoBusca.isEmpty()) {
+        if (ingressoBusca.isEmpty()) 
             throw new IllegalArgumentException("Ingresso com id " + id + " não existe.");
-        }
+        
         return ingressoBusca.get();
-
     }
 
     @Override
     public Ingresso buscarIngressPorTipo(String tipo) {
         Optional<Ingresso> ingressoBusca = ingressoRepository.findByTipo(tipo);
 
-        if (ingressoBusca.isEmpty()) {
+        if (ingressoBusca.isEmpty()) 
             throw new IllegalArgumentException("Ingresso do tipo " + tipo + " não existe.");
-        }
+        
         return ingressoBusca.get();
     }
 
@@ -57,9 +56,8 @@ public class IngressoServiceImpl implements IngressoService {
     public Page<Ingresso> ingressosDisponiveis(Long idEvento, Pageable pageable) {
         Page<Ingresso> ingressos = ingressoRepository.findByEventoId(idEvento, pageable);
 
-        if (ingressos.isEmpty()) {
+        if (ingressos.isEmpty()) 
             throw new IllegalArgumentException("Não existem ingressos para o evento de id " + idEvento);
-        }
 
         return ingressos;
     }

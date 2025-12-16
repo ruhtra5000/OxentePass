@@ -15,27 +15,27 @@ import com.oxentepass.oxentepass.service.VendaService;
 @Service
 public class VendaServiceImpl implements VendaService {
 
-   @Autowired
-   private VendaRepository vendaRepository;
+    @Autowired
+    private VendaRepository vendaRepository;
 
-   @Override
-   public void criarVenda(Venda venda){
-    vendaRepository.save(venda);
-   }
+    @Override
+    public void criarVenda(Venda venda){
+        vendaRepository.save(venda);
+    }
 
-   @Override
-   public Venda finalizarVenda(long id){
-    Venda venda = buscarVendaPorId(id);
-    venda.finalizar();
-    return vendaRepository.save(venda);
-   }
+    @Override
+    public Venda finalizarVenda(long id){
+        Venda venda = buscarVendaPorId(id);
+        venda.finalizar();
+        return vendaRepository.save(venda);
+    }
    
-   @Override
+    @Override
     public Page<Venda> listarTodasVendas(Pageable pageable) {
         return vendaRepository.findAll(pageable);
     }
 
-   @Override
+    @Override
     public void cancelarVenda(long id) {
         Venda venda = buscarVendaPorId(id);
         venda.cancelar();
@@ -45,9 +45,9 @@ public class VendaServiceImpl implements VendaService {
     @Override
     public Venda buscarVendaPorId(long id) {
         Optional<Venda> venda = vendaRepository.findById(id);
-        if (venda.isEmpty()) {
+        if (venda.isEmpty()) 
             throw new RuntimeException("Venda não encontrada com o ID: " + id);
-        }
+        
         return venda.get();
     }
 
@@ -76,5 +76,4 @@ public class VendaServiceImpl implements VendaService {
         venda.removerIngresso(ingressoVenda);
         return vendaRepository.save(venda);
     }
-
 }
