@@ -42,4 +42,5 @@ public interface UsuarioRepository extends
 
     Optional<Usuario> findByCpf(String cpf);
 
+    Optional<Usuario> findByCpfOrEmail(String cpf, String email);
 }
