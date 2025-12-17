@@ -80,7 +80,7 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void deveRejeitarEmailUsuarioTest() {
+    public void deveRejeitarCpfUsuarioTest() {
 
         Usuario user = new Usuario();
         user.setNome("Guy Fawkes");
