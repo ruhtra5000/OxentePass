@@ -16,7 +16,9 @@ public class SecurityConfig {
     // funcionarem (provavelmente será modificado posteriormente)
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) {
-        httpSecurity.authorizeHttpRequests(
+        httpSecurity
+        .csrf(csrf -> csrf.disable()) // TODO: Habilitar CSRF e configurar restrições de acesso
+        .authorizeHttpRequests(
             authorize -> authorize
             .requestMatchers("/**").permitAll()
         );
