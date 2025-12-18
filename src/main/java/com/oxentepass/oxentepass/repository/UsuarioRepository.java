@@ -41,6 +41,8 @@ public interface UsuarioRepository extends
     List<Usuario> findAll();
 
     Optional<Usuario> findByCpf(String cpf);
+    
+    Optional<Usuario> findByEmail(String email);
 
     Optional<Usuario> findByCpfOrEmail(String cpf, String email);
 }
