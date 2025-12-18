@@ -43,7 +43,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public void loginUsuario(String cpf, String senha) {
-        Optional<Usuario> optionalUser = repository.findByCpf(cpf);
+        String cpfLimpo = cpf.replaceAll("\\D", "");
+        
+        Optional<Usuario> optionalUser = repository.findByCpf(cpfLimpo);
 
         if (optionalUser.isEmpty()) {
             throw new RecursoNaoEncontradoException("Nenhum usuário encontrado para o cpf " + cpf);
@@ -62,16 +64,17 @@ public class UsuarioServiceImpl implements UsuarioService {
         Optional<Usuario> optionalUser = repository.findById(id);
 
         if (optionalUser.isEmpty()) {
-            throw new RecursoNaoEncontradoException("Usuário com id" + id + "não encontrado");
+            throw new RecursoNaoEncontradoException("Usuário com id " + id + " não encontrado!");
         }
 
         Usuario user = optionalUser.get();
 
-        // TODO (Guilherme): fazer melhor validação
-        user.setCpf(dados.getCpf());
+        if (!dados.getEmail().equals(user.getEmail()) && repository.findByEmail(dados.getEmail()).isPresent()) {
+            throw new RecursoDuplicadoException("O e-mail " + dados.getEmail() + " já está registrado no sistema!");
+        }   
+
         user.setEmail(dados.getEmail());
         user.setNome(dados.getNome());
-        user.setSenha(dados.getSenha());
 
         repository.save(user);
     };
