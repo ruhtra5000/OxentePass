@@ -13,10 +13,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.oxentepass.oxentepass.exceptions.ArquivoInvalidoException;
 import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 import com.oxentepass.oxentepass.exceptions.OperacaoProibidaException;
 import com.oxentepass.oxentepass.exceptions.RecursoDuplicadoException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
+import com.oxentepass.oxentepass.exceptions.TipoArquivoNaoSuportadoException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -70,6 +72,21 @@ public class GlobalControllerAdvice {
     }
 
     // Exceções customizadas
+    @ExceptionHandler(ArquivoInvalidoException.class)
+    public ResponseEntity<ErroResponse> lidarComArquivoInvalidoException(ArquivoInvalidoException exception, HttpServletRequest request) {
+        ErroResponse erroResponse = new ErroResponse();
+
+        erroResponse.setStatus(400);
+        erroResponse.setErro("Arquivo Invalido");
+        erroResponse.setMensagem(exception.getMessage());
+        erroResponse.setPath(request.getRequestURI());
+
+        return new ResponseEntity<ErroResponse>(
+            erroResponse, 
+            HttpStatus.BAD_REQUEST
+        );
+    }
+
     @ExceptionHandler(EstadoInvalidoException.class)
     public ResponseEntity<ErroResponse> lidarComEstadoInvalidoException(EstadoInvalidoException exception, HttpServletRequest request) {
         ErroResponse erroResponse = new ErroResponse();
@@ -127,6 +144,21 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<ErroResponse>(
             erroResponse, 
             HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(TipoArquivoNaoSuportadoException.class)
+    public ResponseEntity<ErroResponse> lidarComTipoArquivoNaoSuportadoException(TipoArquivoNaoSuportadoException exception, HttpServletRequest request) {
+        ErroResponse erroResponse = new ErroResponse();
+
+        erroResponse.setStatus(415);
+        erroResponse.setErro("Tipo de arquivo não suportado");
+        erroResponse.setMensagem(exception.getMessage());
+        erroResponse.setPath(request.getRequestURI());
+
+        return new ResponseEntity<ErroResponse>(
+            erroResponse, 
+            HttpStatus.UNSUPPORTED_MEDIA_TYPE
         );
     }
 
