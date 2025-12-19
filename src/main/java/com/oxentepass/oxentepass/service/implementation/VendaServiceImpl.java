@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.oxentepass.oxentepass.entity.IngressoVenda;
 import com.oxentepass.oxentepass.entity.Pagamento;
 import com.oxentepass.oxentepass.entity.Venda;
-import com.oxentepass.oxentepass.exceptions.IdInvalidoException;
+import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.VendaRepository;
 import com.oxentepass.oxentepass.service.VendaService;
 
@@ -47,7 +47,7 @@ public class VendaServiceImpl implements VendaService {
     public Venda buscarVendaPorId(long id) {
         Optional<Venda> venda = vendaRepository.findById(id);
         if (venda.isEmpty()) 
-            throw new IdInvalidoException("Venda não encontrada com o ID: " + id);
+            throw new RecursoNaoEncontradoException("Venda não encontrada com o ID: " + id);
         
         return venda.get();
     }
