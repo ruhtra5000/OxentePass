@@ -19,6 +19,7 @@ import com.oxentepass.oxentepass.entity.PontoVenda;
 import com.oxentepass.oxentepass.entity.Tag;
 import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 import com.oxentepass.oxentepass.exceptions.OperacaoProibidaException;
+import com.oxentepass.oxentepass.exceptions.RecursoDuplicadoException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.EventoRepository;
 import com.oxentepass.oxentepass.repository.PontoVendaRepository;
@@ -82,6 +83,22 @@ public class EventoServiceImpl implements EventoService {
     // Checagem de data para sub-eventos (devem estar dentro do período de ocorrência do evento pai)
     private boolean checagemDataSubevento(Evento evento, Evento subevento) {
         return (subevento.getDataHoraInicio().isBefore(evento.getDataHoraInicio()) || subevento.getDataHoraFim().isAfter(evento.getDataHoraFim()));
+    }
+    
+    private boolean pontoVendaExistente(PontoVenda pontoVenda){
+        String nome = pontoVenda.getNome();
+        String cep = pontoVenda.getEndereco().getCep();
+        int numero = pontoVenda.getEndereco().getNumero();
+        
+        return pontoVendaRepository.existsByNomeAndEnderecoCepAndEnderecoNumero(nome, cep, numero);
+    }
+    
+    private boolean pontoVendaContido(PontoVenda pontoVenda){
+        String nome = pontoVenda.getNome();
+        String cep = pontoVenda.getEndereco().getCep();
+        int numero = pontoVenda.getEndereco().getNumero();
+        
+        return eventoRepository.existsByPontoVendaNomeAndPontoVendaEnderecoCepAndPontoVendaEnderecoNumero(nome, cep, numero);
     }
 
     //Métodos da Interface
@@ -224,15 +241,26 @@ public class EventoServiceImpl implements EventoService {
             throw new RecursoNaoEncontradoException("O ponto de venda informado não existe.");
 
         PontoVenda pontoVenda = pontoVendaBusca.get();
+        
+        if(pontoVendaContido(pontoVenda))
+            throw new EstadoInvalidoException("Esse Ponto de Venda já está registrado neste evento!");
 
         evento.addPontoVenda(pontoVenda);
         eventoRepository.save(evento);
     }
 
     @Override
-    public void adicionarPontoVendaNovo(long idEvento, PontoVenda pontoVenda) { //Precisa do Service de PontoVenda
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'adicionarPontoVenda'");
+    @Transactional
+    public void adicionarPontoVendaNovo(long idEvento, PontoVenda pontoVenda) {
+        Evento evento = buscarEventoId(idEvento);
+        
+        if(pontoVendaExistente(pontoVenda))
+            throw new RecursoDuplicadoException("Esse Ponto de Venda já existe no sistema! Tente o outro método.");
+
+        pontoVendaRepository.save(pontoVenda);
+        
+        evento.addPontoVenda(pontoVenda);
+        eventoRepository.save(evento);
     }
 
     @Override
