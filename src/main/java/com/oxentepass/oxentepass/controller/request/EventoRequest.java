@@ -23,10 +23,10 @@ public record EventoRequest(
     String descricao,
 
     @NotNull(message = "O evento deve contar com um organizador.")
-    Organizador organizador,
+    long idOrganizador,
 
     @NotNull(message = "O evento deve contar com uma cidade sede.")
-    Cidade cidade,
+    long idCidade,
     
     @FutureOrPresent(message = "O campo \"dataHoraInicio\" deve estar no presente ou futuro.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -51,6 +51,12 @@ public record EventoRequest(
             evento = new EventoSimples();
         else
             evento = new EventoComposto();
+
+        Organizador organizador = new Organizador();
+        organizador.setId(idOrganizador);
+
+        Cidade cidade = new Cidade();
+        cidade.setId(idCidade);
 
         evento.setNome(nome);
         evento.setDescricao(descricao);
