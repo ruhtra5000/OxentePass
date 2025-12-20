@@ -10,6 +10,7 @@ import com.oxentepass.oxentepass.entity.Ingresso;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.IngressoRepository;
 import com.oxentepass.oxentepass.service.IngressoService;
+import com.querydsl.core.types.Predicate;
 
 @Service
 public class IngressoServiceImpl implements IngressoService {
@@ -29,8 +30,8 @@ public class IngressoServiceImpl implements IngressoService {
     }
 
     @Override
-    public Page<Ingresso> listarTodosIngressos(Pageable pageable) {
-        return ingressoRepository.findAll(pageable);
+    public Page<Ingresso> listarTodosIngressos(Predicate predicate, Pageable pageable) {
+        return ingressoRepository.findAll(predicate, pageable);
     }
 
     @Override
@@ -54,8 +55,8 @@ public class IngressoServiceImpl implements IngressoService {
     }
 
     @Override
-    public Page<Ingresso> ingressosDisponiveis(Long idEvento, Pageable pageable) {
-        Page<Ingresso> ingressos = ingressoRepository.findByEventoId(idEvento, pageable);
+    public Page<Ingresso> ingressosDisponiveis(Long idEvento, Predicate predicate, Pageable pageable) {
+        Page<Ingresso> ingressos = ingressoRepository.findByEventoId(idEvento, predicate, pageable);
 
         if (ingressos.isEmpty()) 
             throw new RecursoNaoEncontradoException("Não existem ingressos para o evento de id " + idEvento);

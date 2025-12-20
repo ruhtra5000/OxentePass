@@ -12,6 +12,7 @@ import com.oxentepass.oxentepass.entity.Venda;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.VendaRepository;
 import com.oxentepass.oxentepass.service.VendaService;
+import com.querydsl.core.types.Predicate;
 
 @Service
 public class VendaServiceImpl implements VendaService {
@@ -32,8 +33,8 @@ public class VendaServiceImpl implements VendaService {
     }
    
     @Override
-    public Page<Venda> listarTodasVendas(Pageable pageable) {
-        return vendaRepository.findAll(pageable);
+    public Page<Venda> listarTodasVendas(Predicate predicate, Pageable pageable) {
+        return vendaRepository.findAll(predicate, pageable);
     }
 
     @Override
@@ -53,8 +54,8 @@ public class VendaServiceImpl implements VendaService {
     }
 
     @Override
-    public Page<Venda> buscarVendaPorUsuario(Long idUsuario, Pageable pageable) {
-        return vendaRepository.findByUsuarioId(idUsuario, pageable);
+    public Page<Venda> buscarVendaPorUsuario(Long idUsuario, Predicate predicate, Pageable pageable) {
+        return vendaRepository.findByUsuarioId(idUsuario, predicate, pageable);
     }
 
     @Override
@@ -72,9 +73,9 @@ public class VendaServiceImpl implements VendaService {
     }
 
     @Override
-    public Venda removerIngresso(IngressoVenda ingressoVenda, long id) {
+    public Venda removerIngresso(Long IdIngressoVenda, long id) {
         Venda venda = buscarVendaPorId(id);
-        venda.removerIngresso(ingressoVenda);
+        venda.removerIngresso(IdIngressoVenda);
         return vendaRepository.save(venda);
     }
 }
