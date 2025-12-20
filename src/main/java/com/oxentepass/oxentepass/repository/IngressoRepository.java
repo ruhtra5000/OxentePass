@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import com.oxentepass.oxentepass.entity.Ingresso;
 import com.oxentepass.oxentepass.entity.QIngresso;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
 
@@ -22,7 +21,7 @@ import com.querydsl.core.types.dsl.StringPath;
 public interface IngressoRepository extends JpaRepository<Ingresso, Long>, QuerydslPredicateExecutor<Ingresso>, QuerydslBinderCustomizer<QIngresso> { 
 
     @Query("select i from Evento e join e.ingressos i where e.id = :idEvento")
-    Page<Ingresso> findByEventoId(@Param("idEvento") Long idEvento, Predicate predicate, Pageable pageable);
+    Page<Ingresso> findByEventoId(@Param("idEvento") Long idEvento, Pageable pageable);
 
     public Optional<Ingresso> findByTipo(String tipo);	
 

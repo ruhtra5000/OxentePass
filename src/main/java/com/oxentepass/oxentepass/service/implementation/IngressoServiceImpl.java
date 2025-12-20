@@ -30,7 +30,12 @@ public class IngressoServiceImpl implements IngressoService {
     }
 
     @Override
-    public Page<Ingresso> listarTodosIngressos(Predicate predicate, Pageable pageable) {
+    public Page<Ingresso> listarTodosIngressos(Pageable pageable) {
+        return ingressoRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Ingresso> filtrarIngressos(Predicate predicate, Pageable pageable) {
         return ingressoRepository.findAll(predicate, pageable);
     }
 
@@ -55,8 +60,8 @@ public class IngressoServiceImpl implements IngressoService {
     }
 
     @Override
-    public Page<Ingresso> ingressosDisponiveis(Long idEvento, Predicate predicate, Pageable pageable) {
-        Page<Ingresso> ingressos = ingressoRepository.findByEventoId(idEvento, predicate, pageable);
+    public Page<Ingresso> ingressosDisponiveis(Long idEvento, Pageable pageable) {
+        Page<Ingresso> ingressos = ingressoRepository.findByEventoId(idEvento, pageable);
 
         if (ingressos.isEmpty()) 
             throw new RecursoNaoEncontradoException("Não existem ingressos para o evento de id " + idEvento);

@@ -11,7 +11,8 @@ import com.querydsl.core.types.Predicate;
 public interface VendaService {
     // Operações Básicas
     public void criarVenda(Venda venda);
-    public Page<Venda> listarTodasVendas(Predicate predicate, Pageable pageable);
+    public Page<Venda> listarTodasVendas(Pageable pageable);
+    public Page<Venda> filtrarVendas(Predicate predicate, Pageable pageable);
     public Venda buscarVendaPorId(long id);
     public Page<Venda> buscarVendaPorUsuario(Long idUsuario, Predicate predicate, Pageable pageable);
     // Modificação de status

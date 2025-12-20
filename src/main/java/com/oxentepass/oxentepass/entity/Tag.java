@@ -12,10 +12,5 @@ public class Tag {
     @GeneratedValue
     private long id;
     private String tag;
-
-    public String getNome() {
-        return tag;
-    }
-
     
 }

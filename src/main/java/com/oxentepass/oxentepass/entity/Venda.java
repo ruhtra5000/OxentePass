@@ -52,12 +52,13 @@ public class Venda {
         calcularValorTotal();
     }
 
-    public void removerIngresso(Long IdIngressoVenda) {
-        boolean resultado = this.ingressos.remove(IdIngressoVenda);
-        calcularValorTotal();
+    public void removerIngresso(IngressoVenda ingressoVenda) {
+        boolean resultado = this.ingressos.remove(ingressoVenda);
 
         if (!resultado)
             throw new RecursoNaoEncontradoException("Este ingresso não se encontra na venda!");
+
+        calcularValorTotal();
     }
 
     public void calcularValorTotal() {

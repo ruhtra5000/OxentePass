@@ -1,6 +1,5 @@
 package com.oxentepass.oxentepass.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -83,9 +82,6 @@ public abstract class Evento {
         if (this.ingressos.contains(ingresso))
             throw new EstadoInvalidoException("O ingresso informado já consta no evento " + this.nome + ".");
 
-        if (possuiTagGratuidade()) 
-            ingresso.setValorBase(BigDecimal.ZERO);
-
         this.ingressos.add(ingresso);
     }
 
@@ -95,7 +91,7 @@ public abstract class Evento {
     }
 
     public boolean possuiTagGratuidade() {
-        return this.tags.stream().anyMatch(tag -> tag.getNome().equalsIgnoreCase("GRATUITO"));
+        return this.tags.stream().anyMatch(tag -> tag.getTag().equalsIgnoreCase("GRATUITO"));
     }
 
     // Ponto de Venda

@@ -1,5 +1,6 @@
 package com.oxentepass.oxentepass.service.implementation;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -199,6 +200,10 @@ public class EventoServiceImpl implements EventoService {
         ingressoService.cadastrarIngresso(ingresso);
 
         evento.addIngresso(ingresso);
+        
+        if (evento.possuiTagGratuidade()) 
+            ingresso.setValorBase(BigDecimal.ZERO);
+
         eventoRepository.save(evento);
     }
 

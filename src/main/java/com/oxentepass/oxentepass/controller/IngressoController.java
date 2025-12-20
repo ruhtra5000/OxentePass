@@ -25,9 +25,17 @@ public class IngressoController {
     //Operações Básicas
 
     @GetMapping("/listar")
-    public ResponseEntity<Page<Ingresso>> listarTodosIngressos (Predicate predicate, Pageable pageable) {
+    public ResponseEntity<Page<Ingresso>> listarTodosIngressos (Pageable pageable) {
         return new ResponseEntity<Page<Ingresso>>(
-            ingressoService.listarTodosIngressos(predicate, pageable), 
+            ingressoService.listarTodosIngressos(pageable), 
+            HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/filtrar")
+    public ResponseEntity<Page<Ingresso>> filtrarIngressos (Predicate predicate, Pageable pageable) {
+        return new ResponseEntity<Page<Ingresso>>(
+            ingressoService.filtrarIngressos(predicate, pageable), 
             HttpStatus.OK
         );
     }
@@ -49,9 +57,9 @@ public class IngressoController {
     }
 
     @GetMapping("/disponivel/{idEvento}")
-    public ResponseEntity<Page<Ingresso>> quantidadeIngressosDisponiveis (@PathVariable Long idEvento, Predicate predicate, Pageable pageable) {
+    public ResponseEntity<Page<Ingresso>> quantidadeIngressosDisponiveis (@PathVariable Long idEvento, Pageable pageable) {
         return new ResponseEntity<Page<Ingresso>>(
-            ingressoService.ingressosDisponiveis(idEvento, predicate, pageable), 
+            ingressoService.ingressosDisponiveis(idEvento, pageable), 
             HttpStatus.OK
         );
     }
