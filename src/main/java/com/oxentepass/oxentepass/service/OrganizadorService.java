@@ -10,6 +10,8 @@ public interface OrganizadorService {
 
     public void promoverUsuario(OrganizadorRequest dados);
 
+    public void editarOrganizador(long id, Organizador dados);
+
     public Page<Organizador> listarOrganizadores(Pageable pageable);
 
 }

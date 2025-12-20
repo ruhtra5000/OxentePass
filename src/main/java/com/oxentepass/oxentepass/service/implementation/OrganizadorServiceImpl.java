@@ -33,12 +33,10 @@ public class OrganizadorServiceImpl implements OrganizadorService {
     @Override
     @Transactional
     public void promoverUsuario(OrganizadorRequest dados) {
-        Usuario usuario = usuarioRepository.findById(dados.usuarioId())
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário com id " + dados.usuarioId() + " não encontrado."));
+        Usuario usuario = buscaUsuario(dados.usuarioId());
 
-        if (organizadorRepository.existsById(usuario.getId())) {
+        if (organizadorRepository.existsById(usuario.getId()))
             throw new RecursoDuplicadoException("Usuário com id " + usuario.getId() + " já é um organizador.");
-        }
 
         // 3. Query Nativa para inserção na tabela filha (Herança JOINED)
         String sql = "INSERT INTO organizador (id, cnpj, telefone, biografia, nota_reputacao) VALUES (:id, :cnpj, :tel, :bio, 5.0)";
@@ -52,7 +50,29 @@ public class OrganizadorServiceImpl implements OrganizadorService {
     }
 
     @Override
+    public void editarOrganizador(long id, Organizador dados) {
+        Organizador organizador = buscaOrganizador(id);
+        
+        organizador.setCnpj(dados.getCnpj());
+        organizador.setTelefone(dados.getTelefone());
+        organizador.setBiografia(dados.getBiografia());
+
+        organizadorRepository.save(organizador);
+    }
+
+    @Override
     public Page<Organizador> listarOrganizadores(Pageable pageable) {
         return organizadorRepository.findAll(pageable);
+    }
+
+    // Métodos auxiliares
+    private Organizador buscaOrganizador(long id) {
+        return organizadorRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Organizador com id " + id + " não encontrado."));
+    }
+
+    private Usuario buscaUsuario(long id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário com id " + id + " não encontrado."));
     }
 }

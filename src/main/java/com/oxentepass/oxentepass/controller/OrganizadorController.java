@@ -26,6 +26,16 @@ public class OrganizadorController {
         return new ResponseEntity<String>("Usuário promovido a Organizador com sucesso!", HttpStatus.CREATED);
     }
 
+    @PutMapping
+    public ResponseEntity<String> editar(@RequestBody long id, @RequestBody @Valid Organizador dados) {
+        service.editarOrganizador(id, dados);
+        
+        return new ResponseEntity<String>(
+            "Organizador com id " + id + " atualizado com sucesso!",
+            HttpStatus.OK
+        );
+    }
+
     @GetMapping
     public ResponseEntity<Page<Organizador>> listar(Pageable pageable) {
         return new ResponseEntity<>(service.listarOrganizadores(pageable), HttpStatus.OK);
