@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.oxentepass.oxentepass.entity.IngressoVenda;
-import com.oxentepass.oxentepass.entity.Pagamento;
+import com.oxentepass.oxentepass.entity.MetodoPagamento;
 import com.oxentepass.oxentepass.entity.Venda;
 import com.querydsl.core.types.Predicate;
 
@@ -19,7 +19,7 @@ public interface VendaService {
     public Venda finalizarVenda(long id);
     public void cancelarVenda(long id);
     // Pagamento
-    public Venda confirmarPagamento(long id, Pagamento pagamento);
+    public Venda confirmarPagamento(long idVenda, MetodoPagamento metodo);
     // Ingressos
     public Venda adicionarIngresso(IngressoVenda ingressoVenda, long id);
     public Venda removerIngresso(Long IdIngressoVenda, long id);
