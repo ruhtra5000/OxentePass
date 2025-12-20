@@ -10,7 +10,6 @@ import com.oxentepass.oxentepass.entity.IngressoVenda;
 import com.oxentepass.oxentepass.entity.Pagamento;
 import com.oxentepass.oxentepass.entity.Venda;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
-import com.oxentepass.oxentepass.repository.IngressoVendaRepository;
 import com.oxentepass.oxentepass.repository.VendaRepository;
 import com.oxentepass.oxentepass.service.VendaService;
 import com.querydsl.core.types.Predicate;
@@ -20,9 +19,6 @@ public class VendaServiceImpl implements VendaService {
 
     @Autowired
     private VendaRepository vendaRepository;
-
-    @Autowired
-    private IngressoVendaRepository ingressoVendaRepository;
 
     @Override
     public void criarVenda(Venda venda){
@@ -83,10 +79,21 @@ public class VendaServiceImpl implements VendaService {
 
     @Override
     public Venda removerIngresso(Long idIngressoVenda, long id) {
+
         Venda venda = buscarVendaPorId(id);
-        
-        IngressoVenda ingressoVenda = ingressoVendaRepository.findById(idIngressoVenda)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Ingresso não encontrado"));
+
+        IngressoVenda ingressoVenda = null;
+
+        for (IngressoVenda i : venda.getIngressos()) {
+            if (i.getId() == (idIngressoVenda)) {
+                ingressoVenda = i;
+                break;
+            }
+        }
+
+        if (ingressoVenda == null) {
+            throw new RecursoNaoEncontradoException("Ingresso não encontrado");
+        }
 
         venda.removerIngresso(ingressoVenda);
         return vendaRepository.save(venda);
