@@ -135,11 +135,16 @@ public abstract class Evento {
     }
 
     private void calcularMediaAvaliacao() {
-        double total = 0;
-        for (Avaliacao aval : this.avaliacoes) 
-            total += aval.getNota();
+        double resultado = 0;
+        
+        if(!this.avaliacoes.isEmpty()){
+            for (Avaliacao aval : this.avaliacoes) 
+                resultado += aval.getNota();
+    
+            resultado = (double)(resultado / this.avaliacoes.size());
+        }
 
-        this.mediaAvaliacao = (double)(total / this.avaliacoes.size());
+        this.mediaAvaliacao = resultado;
     }
 
     // Imagens

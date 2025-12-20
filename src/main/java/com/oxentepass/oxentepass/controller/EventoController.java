@@ -3,8 +3,10 @@ package com.oxentepass.oxentepass.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oxentepass.oxentepass.controller.request.AvaliacaoRequest;
 import com.oxentepass.oxentepass.controller.request.EventoRequest;
 import com.oxentepass.oxentepass.controller.request.IngressoRequest;
+import com.oxentepass.oxentepass.controller.request.PontoVendaRequest;
 import com.oxentepass.oxentepass.controller.request.TagRequest;
 import com.oxentepass.oxentepass.controller.response.EventoResponse;
 import com.oxentepass.oxentepass.entity.Evento;
@@ -155,10 +157,14 @@ public class EventoController {
         );
     }
 
-    @PatchMapping("/{idEvento}/addPontoVenda") //Adicionar DTO de entrada
-    public ResponseEntity<String> adicionarPontoVendaNovo (@PathVariable long idEvento) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'adicionarPontoVendaNovo'");
+    @PatchMapping("/{idEvento}/addPontoVenda")
+    public ResponseEntity<String> adicionarPontoVendaNovo (@PathVariable long idEvento, @RequestBody @Valid PontoVendaRequest dto) {
+        eventoService.adicionarPontoVendaNovo(idEvento, dto.paraEntidade());
+
+        return new ResponseEntity<String>(
+            "Ponto de venda " + dto.nome() + " adicionado ao evento com id " + idEvento + " com sucesso!",
+            HttpStatus.CREATED
+        );
     }
 
     @PatchMapping("/{idEvento}/removerPontoVenda/{idPontoVenda}")
@@ -172,16 +178,24 @@ public class EventoController {
     }
 
     //Avaliações
-    @PatchMapping("/{idEvento}/addAvaliacao") //Adicionar DTO de entrada
-    public ResponseEntity<String> adicionarAvaliacao (@PathVariable long idEvento) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'adicionarAvaliacao'");
+    @PatchMapping("/{idEvento}/addAvaliacao")
+    public ResponseEntity<String> adicionarAvaliacao (@PathVariable long idEvento, @RequestBody @Valid AvaliacaoRequest dto) {
+        eventoService.adicionarAvaliacao(idEvento, dto.paraEntidade());
+        
+        return new ResponseEntity<String>(
+            "Avaliação adicionada ao evento com id " + idEvento + " com sucesso!",
+            HttpStatus.CREATED
+        );
     }
 
-    @PatchMapping("/{idEvento}/removerAvaliacao") //Adicionar DTO de entrada
-    public ResponseEntity<String> removerAvaliacao (@PathVariable long idEvento) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removerAvaliacao'");
+    @PatchMapping("/{idEvento}/removerAvaliacao/{idAvaliacao}")
+    public ResponseEntity<String> removerAvaliacao (@PathVariable long idEvento, @PathVariable long idAvaliacao) {
+        eventoService.removerAvaliacao(idEvento, idAvaliacao);
+
+        return new ResponseEntity<String>(
+            "Avaliação com id " + idAvaliacao + " removida do evento com id " + idEvento + " com sucesso!",
+            HttpStatus.OK
+        );
     }
 
     //Sub-Eventos

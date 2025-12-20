@@ -1,15 +1,17 @@
 package com.oxentepass.oxentepass.controller.request;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import com.oxentepass.oxentepass.entity.Usuario;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 public record UsuarioRequest(
         @NotBlank(message = "O campo \"nome\" é obrigatorio") String nome,
 
-        @NotBlank(message = "O campo \"cpf\" é obrigatorio") @Size(min = 11, max = 14, message = "O CPF deve ter entre 11 e 14 dígitos") String cpf,
+        @NotBlank(message = "O campo \"cpf\" é obrigatorio") @Pattern(regexp = "^\\d{11}$", message = "O CPF deve conter exatamente 11 dígitos numéricos") @CPF String cpf,
 
         @NotBlank(message = "O campo \"email\" é obrigatorio") @Email String email,
 
@@ -18,8 +20,10 @@ public record UsuarioRequest(
     public Usuario paraEntidade() {
         Usuario usuario = new Usuario();
 
+        String cpfLimpo = cpf.replaceAll("\\D", "");
+
         usuario.setNome(nome);
-        usuario.setCpf(cpf);
+        usuario.setCpf(cpfLimpo);
         usuario.setEmail(email);
         usuario.setSenha(senha);
 
