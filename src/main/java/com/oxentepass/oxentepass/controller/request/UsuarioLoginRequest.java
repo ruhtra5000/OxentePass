@@ -1,9 +1,11 @@
 package com.oxentepass.oxentepass.controller.request;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 public record UsuarioLoginRequest(
-                @NotBlank @Size(min = 11, max = 14, message = "O CPF deve ter entre 11 e 14 dígitos") String cpf,
-                @NotBlank String senha) {
+        @NotBlank @Pattern(regexp = "^\\d{11}$", message = "O CPF deve conter exatamente 11 dígitos numéricos") @CPF String cpf,
+        @NotBlank String senha) {
 }

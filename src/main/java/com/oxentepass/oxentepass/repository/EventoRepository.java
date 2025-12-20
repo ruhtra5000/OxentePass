@@ -61,6 +61,7 @@ public interface EventoRepository extends JpaRepository<Evento, Long>,
    @Query("select i from Evento e join e.imagens i where e.id = :id")
    Page<Imagem> findImagemByEventoId(@Param("id") long id, Pageable pageable);
 
+   boolean existsByPontoVendaNomeAndPontoVendaEnderecoCepAndPontoVendaEnderecoNumero(String nome, String cep, int numero);
     @Override
     default void customize(QuerydslBindings bindings, QEvento root) {
         // Bind para ID

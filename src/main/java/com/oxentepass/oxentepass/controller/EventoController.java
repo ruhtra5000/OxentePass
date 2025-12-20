@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.oxentepass.oxentepass.controller.request.AvaliacaoRequest;
 import com.oxentepass.oxentepass.controller.request.EventoRequest;
 import com.oxentepass.oxentepass.controller.request.IngressoRequest;
+import com.oxentepass.oxentepass.controller.request.PontoVendaRequest;
 import com.oxentepass.oxentepass.controller.request.TagRequest;
 import com.oxentepass.oxentepass.controller.response.EventoResponse;
 import com.oxentepass.oxentepass.entity.Evento;
@@ -156,10 +157,14 @@ public class EventoController {
         );
     }
 
-    @PatchMapping("/{idEvento}/addPontoVenda") //Adicionar DTO de entrada
-    public ResponseEntity<String> adicionarPontoVendaNovo (@PathVariable long idEvento) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'adicionarPontoVendaNovo'");
+    @PatchMapping("/{idEvento}/addPontoVenda")
+    public ResponseEntity<String> adicionarPontoVendaNovo (@PathVariable long idEvento, @RequestBody @Valid PontoVendaRequest dto) {
+        eventoService.adicionarPontoVendaNovo(idEvento, dto.paraEntidade());
+
+        return new ResponseEntity<String>(
+            "Ponto de venda " + dto.nome() + " adicionado ao evento com id " + idEvento + " com sucesso!",
+            HttpStatus.CREATED
+        );
     }
 
     @PatchMapping("/{idEvento}/removerPontoVenda/{idPontoVenda}")
