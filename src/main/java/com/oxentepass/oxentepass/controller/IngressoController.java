@@ -22,7 +22,9 @@ public class IngressoController {
     @Autowired
     private IngressoService ingressoService;
     
-    //Operações Básicas
+    // As operações de criar e deletar ingresso
+    // estão em EventoController, para que não sejam
+    // criados ingressos desvinculados de eventos
 
     @GetMapping("/listar")
     public ResponseEntity<Page<Ingresso>> listarTodosIngressos (Pageable pageable) {
