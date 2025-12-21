@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.oxentepass.oxentepass.entity.IngressoVenda;
+import com.oxentepass.oxentepass.entity.MetodoPagamento;
 import com.oxentepass.oxentepass.entity.Pagamento;
 import com.oxentepass.oxentepass.entity.Venda;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
@@ -64,9 +65,20 @@ public class VendaServiceImpl implements VendaService {
     }
 
     @Override
-    public Venda confirmarPagamento(long id, Pagamento pagamento) {
-        Venda venda = buscarVendaPorId(id);
-        venda.setPagamento(pagamento);
+    public Venda confirmarPagamento(long idVenda, MetodoPagamento metodo) {
+
+        Venda venda = buscarVendaPorId(idVenda);
+
+        Pagamento pagamento = venda.getPagamento();
+        if (pagamento == null) {
+            throw new IllegalStateException("Venda não possui pagamento associado");
+        }
+
+        pagamento.setMetodoPagamento(metodo);
+        pagamento.confirmar();
+
+        venda.marcarComoPaga();
+
         return vendaRepository.save(venda);
     }
 

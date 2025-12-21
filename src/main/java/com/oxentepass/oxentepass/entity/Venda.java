@@ -91,6 +91,13 @@ public class Venda {
         this.valorTotal = BigDecimal.ZERO;
     }
 
+    public void marcarComoPaga() {
+        if (this.status != StatusVenda.FINALIZADA) {
+            throw new EstadoInvalidoException("A venda só pode ser marcada como paga se estiver finalizada");
+        }
+        status = StatusVenda.PAGA;
+    }
+
     private void devolverIngressos() {
         for (IngressoVenda ingressoVenda : ingressos) {
             ingressoVenda.getIngresso().devolverQuantidade(ingressoVenda.getQuantidade());
