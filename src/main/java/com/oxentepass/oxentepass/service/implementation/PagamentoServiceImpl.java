@@ -16,24 +16,31 @@ import com.querydsl.core.types.Predicate;
 @Service
 public class PagamentoServiceImpl implements PagamentoService {
 
+    // Repositórios
     @Autowired
     private PagamentoRepository pagamentoRepository;
 
+    // Métodos
+
+    // Cria um novo pagamento
     @Override
     public void criarPagamento(Pagamento pagamento) {
         pagamentoRepository.save(pagamento);
     }
 
+    // Lista todos os pagamentos com paginação
     @Override
     public Page<Pagamento> listarTodosPagamentos(Pageable pageable) {
         return pagamentoRepository.findAll(pageable);
     }
 
+    // Filtra pagamentos
     @Override
     public Page<Pagamento> filtrarPagamentos(Predicate predicate, Pageable pageable) {
         return pagamentoRepository.findAll(predicate, pageable);
     }
 
+    // Atualiza o status do pagamento para confirmado
     @Override
     public Pagamento confirmarPagamento(Long id) {
         Pagamento pagamento = buscarPagamentoPorId(id);
@@ -41,6 +48,7 @@ public class PagamentoServiceImpl implements PagamentoService {
         return pagamentoRepository.save(pagamento);
     }
 
+    // Atualiza o status do pagamento para cancelado
     @Override
     public Pagamento cancelarPagamento(Long id) {
         Pagamento pagamento = buscarPagamentoPorId(id);
@@ -48,6 +56,7 @@ public class PagamentoServiceImpl implements PagamentoService {
         return pagamentoRepository.save(pagamento);
     }
 
+    // Atualiza o status do pagamento para estornado
     @Override
     public Pagamento estornarPagamento(Long id) {
         Pagamento pagamento = buscarPagamentoPorId(id);
@@ -55,6 +64,7 @@ public class PagamentoServiceImpl implements PagamentoService {
         return pagamentoRepository.save(pagamento);
     }
 
+    // Atualiza o status do pagamento para recusado
     @Override
     public Pagamento recusarPagamento(Long id) {
         Pagamento pagamento = buscarPagamentoPorId(id);
@@ -62,6 +72,7 @@ public class PagamentoServiceImpl implements PagamentoService {
         return pagamentoRepository.save(pagamento);
     }
 
+    // Busca um pagamento pelo ID
     @Override
     public Pagamento buscarPagamentoPorId(Long id) {
         Optional<Pagamento> pagamentoBusca = pagamentoRepository.findById(id);

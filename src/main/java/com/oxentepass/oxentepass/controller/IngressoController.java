@@ -19,11 +19,13 @@ import org.springframework.data.domain.Pageable;
 @RequestMapping("/ingresso")
 public class IngressoController {
 
+    // Service de ingresso
     @Autowired
     private IngressoService ingressoService;
     
     //Operações Básicas
 
+    // Listar todos os ingressos
     @GetMapping("/listar")
     public ResponseEntity<Page<Ingresso>> listarTodosIngressos (Pageable pageable) {
         return new ResponseEntity<Page<Ingresso>>(
@@ -32,6 +34,7 @@ public class IngressoController {
         );
     }
 
+    // Filtrar ingressos
     @GetMapping("/filtrar")
     public ResponseEntity<Page<Ingresso>> filtrarIngressos (Predicate predicate, Pageable pageable) {
         return new ResponseEntity<Page<Ingresso>>(
@@ -40,6 +43,7 @@ public class IngressoController {
         );
     }
 
+    // Buscar ingresso por ID
     @GetMapping("/buscar/{idIngresso}")
     public ResponseEntity<Ingresso> buscarIngressoPorId (@PathVariable Long idIngresso) {
         return new ResponseEntity<Ingresso>(
@@ -48,6 +52,7 @@ public class IngressoController {
         );
     }
 
+    // Quantidade de ingressos disponíveis para um evento
     @GetMapping("/disponivel/{idEvento}")
     public ResponseEntity<Page<Ingresso>> quantidadeIngressosDisponiveis (@PathVariable Long idEvento, Pageable pageable) {
         return new ResponseEntity<Page<Ingresso>>(

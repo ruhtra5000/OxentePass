@@ -27,8 +27,12 @@ import jakarta.validation.Valid;
 
 public class VendaController {
 
+    // Service de venda
     @Autowired VendaService vendaService;
 
+    // Endpoints
+
+    // Criar uma nova venda
     @PostMapping("/criar")
     public ResponseEntity<String> criarVenda(@RequestBody @Valid VendaRequest dto) {
         vendaService.criarVenda(dto.paraEntidade());
@@ -39,6 +43,7 @@ public class VendaController {
         );
     }
 
+    // Finalizar uma venda
     @PostMapping("/finalizar/{id}")
     public ResponseEntity<String> finalizarVenda(@PathVariable long id) {
         vendaService.finalizarVenda(id);
@@ -49,6 +54,7 @@ public class VendaController {
         );
     }
 
+    // Listar todas as vendas
     @GetMapping("/listar")
     public ResponseEntity<Page<VendaResponse>> listarTodasVendas(Pageable pageable) {
         
@@ -57,6 +63,7 @@ public class VendaController {
         );
     }  
     
+    // Filtrar vendas com QueryDSL
     @GetMapping("/filtrar")
     public ResponseEntity<Page<VendaResponse>> filtrarVendas(Predicate predicate, Pageable pageable){
 
@@ -65,6 +72,7 @@ public class VendaController {
         );
     }
 
+    // Cancelar uma venda
     @PostMapping("/cancelar/{id}")
     public ResponseEntity<String> cancelarVenda(@PathVariable long id) {
         vendaService.cancelarVenda(id);
@@ -75,6 +83,7 @@ public class VendaController {
         );
     }
 
+    // Adicionar ingresso à venda
     @PutMapping("/adicionaringresso/{id}")
     public ResponseEntity<VendaResponse> adicionarIngresso(@PathVariable Long id, @RequestBody IngressoVenda ingressoVenda) {
         
@@ -83,6 +92,7 @@ public class VendaController {
         );
     }
 
+    // Remover ingresso da venda
     @PutMapping("/removeringresso/{id}/{idIngressoVenda}")
     public ResponseEntity<VendaResponse> removerIngresso(@PathVariable long idIngressoVenda, @PathVariable Long id) {
     
@@ -91,6 +101,7 @@ public class VendaController {
         );
     }
     
+    // Buscar venda por ID
     @GetMapping("/buscar/{id}")
     public ResponseEntity<VendaResponse> buscarVendaPorId(@PathVariable long id) {
         
@@ -99,6 +110,7 @@ public class VendaController {
         );
     }
 
+    // Buscar vendas por usuário
     @GetMapping("/buscar/usuario/{idUsuario}")
     public ResponseEntity<Page<VendaResponse>> buscarVendaPorUsuario(@PathVariable Long idUsuario, Predicate predicate, Pageable pageable) {
 

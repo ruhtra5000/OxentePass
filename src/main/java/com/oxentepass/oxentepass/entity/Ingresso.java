@@ -21,6 +21,8 @@ public class Ingresso {
     private boolean temMeiaEntrada;
 
     // Métodos
+
+    // Reduz a quantidade disponível de ingressos
     public void reduzirQuantidade(int quantidade) {
         if (quantidade > quantidadeDisponivel) 
             throw new EstadoInvalidoException("Quantidade de ingressos inválida.");
@@ -28,6 +30,7 @@ public class Ingresso {
         this.quantidadeDisponivel -= quantidade;
     }
 
+    // Devolve a quantidade de ingressos
     public void devolverQuantidade(int quantidade) {
         this.quantidadeDisponivel += quantidade;
     }

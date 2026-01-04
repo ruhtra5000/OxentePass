@@ -47,11 +47,14 @@ public class Venda {
     }
 
     // Métodos
+
+    // Adiciona um ingresso à venda
     public void addIngresso(IngressoVenda ingressoVenda) {
         this.ingressos.add(ingressoVenda);
         calcularValorTotal();
     }
 
+    // Remove um ingresso da venda
     public void removerIngresso(IngressoVenda ingressoVenda) {
         boolean resultado = this.ingressos.remove(ingressoVenda);
 
@@ -61,6 +64,7 @@ public class Venda {
         calcularValorTotal();
     }
 
+    // Calcula o valor total da venda
     public void calcularValorTotal() {
         BigDecimal valorTotal = BigDecimal.ZERO;
         
@@ -70,6 +74,7 @@ public class Venda {
         this.valorTotal = valorTotal;
     }
 
+    // Finaliza a venda
     public void finalizar() {
         if (this.status != StatusVenda.ABERTA) {
             throw new EstadoInvalidoException("A venda só pode ser finalizada se estiver aberta");
@@ -80,6 +85,7 @@ public class Venda {
         calcularValorTotal();
     }
 
+    // Cancela a venda
     public void cancelar() {
         if (this.status == StatusVenda.CANCELADA) {
             throw new OperacaoProibidaException("Venda já está cancelada");
@@ -91,6 +97,7 @@ public class Venda {
         this.valorTotal = BigDecimal.ZERO;
     }
 
+    // Marca a venda como paga
     public void marcarComoPaga() {
         if (this.status != StatusVenda.FINALIZADA) {
             throw new EstadoInvalidoException("A venda só pode ser marcada como paga se estiver finalizada");
@@ -98,6 +105,7 @@ public class Venda {
         status = StatusVenda.PAGA;
     }
 
+    // Devolve os ingressos da venda ao estoque
     private void devolverIngressos() {
         for (IngressoVenda ingressoVenda : ingressos) {
             ingressoVenda.getIngresso().devolverQuantidade(ingressoVenda.getQuantidade());
