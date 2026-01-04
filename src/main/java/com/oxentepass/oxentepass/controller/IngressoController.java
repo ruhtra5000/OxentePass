@@ -23,7 +23,9 @@ public class IngressoController {
     @Autowired
     private IngressoService ingressoService;
     
-    //Operações Básicas
+    // As operações de criar e deletar ingresso
+    // estão em EventoController, para que não sejam
+    // criados ingressos desvinculados de eventos
 
     // Listar todos os ingressos
     @GetMapping("/listar")
