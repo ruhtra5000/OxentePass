@@ -15,7 +15,7 @@ public class SecurityConfig {
     // Configuração básica do spring security, só para as rotas
     // funcionarem (provavelmente será modificado posteriormente)
     @Bean
-    public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) {
+    public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception {
         httpSecurity
         .csrf(csrf -> csrf.disable()) // TODO: Habilitar CSRF e configurar restrições de acesso
         .authorizeHttpRequests(
