@@ -19,6 +19,11 @@ import com.oxentepass.oxentepass.entity.EventoSimples;
 import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 import com.oxentepass.oxentepass.repository.EventoRepository;
 
+/**
+ * @author Arthur de Sá
+ * Testes de integração para EventoService
+ */
+
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -30,6 +35,7 @@ public class EventoServiceTest {
     @Autowired
     private EventoService eventoService;
 
+    // Cadastro de Evento com sucesso
     @Test
     @Rollback
     public void testeCadastroEventoSucesso() {
@@ -45,6 +51,7 @@ public class EventoServiceTest {
         assertEquals(1, eventos.size());
     }
 
+    // Cadastro de Evento com momento de fim antes do momento de início, lançando exceção
     @Test
     @Rollback
     public void testeCadastroEventoErroData() {

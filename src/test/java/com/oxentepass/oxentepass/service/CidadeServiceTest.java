@@ -25,6 +25,11 @@ import com.oxentepass.oxentepass.exceptions.RecursoDuplicadoException;
 import com.oxentepass.oxentepass.repository.CidadeRepository;
 import com.oxentepass.oxentepass.service.implementation.CidadeServiceImpl;
 
+/**
+ * @author Arthur de Sá
+ * Testes unitários para CidadeService
+ */
+
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -37,6 +42,7 @@ public class CidadeServiceTest {
     @InjectMocks
     private CidadeServiceImpl cidadeService;
 
+    // Cadastro de Cidade com sucesso
     @Test
     @Rollback
     public void testeCadastroCidadeComSucesso() {
@@ -51,6 +57,7 @@ public class CidadeServiceTest {
         verify(cidadeRepository, times(1)).save(cidade);
     }
 
+    // Cadastro de Cidade com nome duplicado, lançando exceção
     @Test
     @Rollback
     public void testeCadastroCidadeDuplicada() {
