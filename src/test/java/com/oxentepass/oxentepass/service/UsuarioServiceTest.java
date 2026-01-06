@@ -18,6 +18,11 @@ import com.oxentepass.oxentepass.repository.UsuarioRepository;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * @author Guilherme Paes
+ * Testes de integração para UsuarioService
+ */
+
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -31,6 +36,7 @@ public class UsuarioServiceTest {
 
     private Usuario userBase;
 
+    // Configuração inicial antes de cada teste
     @BeforeEach
     void setup() {
         userBase = new Usuario();
@@ -40,6 +46,7 @@ public class UsuarioServiceTest {
         userBase.setSenha("vendetta");
     }
 
+    // Teste para registrar um novo usuário com sucesso
     @Test
     public void deveRegistrarUsuarioTest() {
         long qtdeInicial = repository.count();
@@ -52,6 +59,7 @@ public class UsuarioServiceTest {
         assertThat(salvo.getNome()).isEqualTo("Guy Fawkes");
     }
 
+    // Teste para rejeitar registro de usuário com CPF já existente
     @Test
     public void deveRejeitarRegistroDuplicadoUsuarioTest() {
         service.cadastrarUsuario(userBase);
@@ -60,12 +68,14 @@ public class UsuarioServiceTest {
         assertThrows(RecursoDuplicadoException.class, () -> service.cadastrarUsuario(userBase));
     }
 
+    // Teste para autenticar usuário com sucesso
     @Test
     public void deveAutenticarUsuarioTest() {
         service.cadastrarUsuario(userBase);
         assertDoesNotThrow(() -> service.loginUsuario("17617617617", "vendetta"));
     }
 
+    // Teste para rejeitar autenticação com senha incorreta
     @Test
     public void deveRejeitarSenhaUsuarioTest() {
         service.cadastrarUsuario(userBase);
@@ -73,6 +83,7 @@ public class UsuarioServiceTest {
                 () -> service.loginUsuario("17617617617", "senhaErrada"));
     }
 
+    // Teste para atualizar dados do usuário com sucesso
     @Test
     public void deveAtualizarUsuarioTest() {
         service.cadastrarUsuario(userBase);

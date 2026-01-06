@@ -1,20 +1,26 @@
 package com.oxentepass.oxentepass.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-
-import tools.jackson.databind.ObjectMapper;
-import com.oxentepass.oxentepass.controller.request.PontoVendaRequest;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.oxentepass.oxentepass.controller.request.PontoVendaRequest;
+
+import tools.jackson.databind.ObjectMapper;
+
+/**
+ * @author Guilherme Paes
+ * Testes de integração para PontoVendaController
+ */
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -28,6 +34,7 @@ class PontoVendaControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    // Teste para criação de Ponto de Venda com CEP válido
     @Test
     void deveCriarPontoVendaRetornandoHttp201() throws Exception {
 
@@ -46,6 +53,7 @@ class PontoVendaControllerTest {
                 .andExpect(content().string("Ponto de Venda " + request.nome() + " criado com sucesso"));
     }
 
+    // Teste para criação de Ponto de Venda com CEP inválido
     @Test
     void deveRejeitarCepInvalidoRetornandoHttp400() throws Exception {
         PontoVendaRequest request = new PontoVendaRequest(
