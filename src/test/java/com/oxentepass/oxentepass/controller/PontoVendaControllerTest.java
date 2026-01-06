@@ -16,6 +16,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * @author Guilherme Paes
+ * Testes de integração para PontoVendaController
+ */
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")

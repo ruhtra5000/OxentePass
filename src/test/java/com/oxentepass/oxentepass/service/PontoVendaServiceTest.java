@@ -16,6 +16,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * @author Guilherme Paes
+ * Testes unitários para PontoVendaService
+ */
+
 @ExtendWith(MockitoExtension.class)
 class PontoVendaServiceTest {
 

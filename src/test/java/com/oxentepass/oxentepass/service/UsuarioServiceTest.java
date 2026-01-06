@@ -18,6 +18,11 @@ import com.oxentepass.oxentepass.repository.UsuarioRepository;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * @author Guilherme Paes
+ * Testes de integração para UsuarioService
+ */
+
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
