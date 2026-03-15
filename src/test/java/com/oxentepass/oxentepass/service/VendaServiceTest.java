@@ -31,6 +31,12 @@ import com.oxentepass.oxentepass.repository.VendaRepository;
 import com.oxentepass.oxentepass.service.implementation.VendaServiceImpl;
 import com.querydsl.core.types.Predicate;
 
+/**
+ * @author Victor Cauã
+ * Testes unitários para VendaService
+ */
+
+
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 @Transactional
@@ -44,18 +50,21 @@ class VendaServiceTest {
 
     private Venda venda;
 
+    // Configuração inicial antes de cada teste
     @BeforeEach
     void setup() {
         venda = new Venda();
         venda.setIngressos(new ArrayList<>());
     }
 
+    // Teste para criação de venda
     @Test
     void deveCriarVenda() {
         vendaService.criarVenda(venda);
         verify(vendaRepository).save(venda);
     }
 
+    // Teste para buscar venda por ID
     @Test
     void deveBuscarVendaPorId() {
         when(vendaRepository.findById(1L)).thenReturn(Optional.of(venda));
@@ -65,6 +74,7 @@ class VendaServiceTest {
         assertNotNull(resultado);
     }
 
+    // Teste para lançar exceção ao buscar venda inexistente
     @Test
     void deveFinalizarVenda() {
         when(vendaRepository.findById(1L)).thenReturn(Optional.of(venda));
@@ -77,6 +87,7 @@ class VendaServiceTest {
         verify(vendaRepository).save(venda);
     }
 
+    // Teste para cancelar venda
     @Test
     void deveCancelarVenda() {
         when(vendaRepository.findById(1L)).thenReturn(Optional.of(venda));
@@ -86,6 +97,7 @@ class VendaServiceTest {
         verify(vendaRepository).save(venda);
     }
 
+    // Teste para listar todas as vendas com paginação
     @Test
     void deveListarTodasVendas() {
         Pageable pageable = PageRequest.of(0, 10);
@@ -98,6 +110,7 @@ class VendaServiceTest {
         assertNotNull(resultado);
     }
 
+    // Teste para filtrar vendas com predicado e paginação
     @Test
     void deveFiltrarVendas() {
         Pageable pageable = PageRequest.of(0, 10);
@@ -111,6 +124,7 @@ class VendaServiceTest {
         assertNotNull(resultado);
     }
 
+    // Teste para remover ingresso de uma venda
     @Test
     void deveRemoverIngresso() {
         IngressoVenda ingresso = new IngressoVenda();
@@ -126,6 +140,7 @@ class VendaServiceTest {
         assertTrue(resultado.getIngressos().isEmpty());
     }
 
+    // Teste para lançar exceção ao remover ingresso de venda inexistente
     @Test
     void deveLancarExcecaoAoRemoverIngressoInexistente() {
         when(vendaRepository.findById(1L)).thenReturn(Optional.of(venda));

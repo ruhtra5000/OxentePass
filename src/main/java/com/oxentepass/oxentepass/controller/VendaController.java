@@ -17,10 +17,17 @@ import com.oxentepass.oxentepass.entity.IngressoVenda;
 import com.oxentepass.oxentepass.service.VendaService;
 import com.querydsl.core.types.Predicate;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import jakarta.validation.Valid;
+
+/**
+ * @author Victor Cauã
+ * Controller para manipular Venda, através de VendaService
+ */
 
 @RestController
 @RequestMapping("/venda")
@@ -33,6 +40,7 @@ public class VendaController {
     // Endpoints
 
     // Criar uma nova venda
+    @Operation(summary = "Criar Venda", description = "Cria uma nova Venda")
     @PostMapping("/criar")
     public ResponseEntity<String> criarVenda(@RequestBody @Valid VendaRequest dto) {
         vendaService.criarVenda(dto.paraEntidade());
@@ -44,6 +52,7 @@ public class VendaController {
     }
 
     // Finalizar uma venda
+    @Operation(summary = "Finalizar Venda", description = "Finaliza uma Venda existente")
     @PostMapping("/finalizar/{id}")
     public ResponseEntity<String> finalizarVenda(@PathVariable long id) {
         vendaService.finalizarVenda(id);
@@ -55,6 +64,7 @@ public class VendaController {
     }
 
     // Listar todas as vendas
+    @Operation(summary = "Listar Vendas", description = "Retorna todas as Vendas com paginação")
     @GetMapping("/listar")
     public ResponseEntity<Page<VendaResponse>> listarTodasVendas(Pageable pageable) {
         
@@ -64,6 +74,7 @@ public class VendaController {
     }  
     
     // Filtrar vendas com QueryDSL
+    @Operation(summary = "Filtrar Vendas", description = "Filtra as Vendas com QueryDSL e paginação")
     @GetMapping("/filtrar")
     public ResponseEntity<Page<VendaResponse>> filtrarVendas(Predicate predicate, Pageable pageable){
 
@@ -74,6 +85,7 @@ public class VendaController {
 
     // Cancelar uma venda
     @PostMapping("/cancelar/{id}")
+    @Operation(summary = "Cancelar Venda", description = "Cancela uma Venda existente")
     public ResponseEntity<String> cancelarVenda(@PathVariable long id) {
         vendaService.cancelarVenda(id);
 
@@ -84,6 +96,7 @@ public class VendaController {
     }
 
     // Adicionar ingresso à venda
+    @Operation(summary = "Adicionar Ingresso à Venda", description = "Adiciona um Ingresso à Venda existente")
     @PutMapping("/adicionaringresso/{id}")
     public ResponseEntity<VendaResponse> adicionarIngresso(@PathVariable Long id, @RequestBody IngressoVenda ingressoVenda) {
         
@@ -93,6 +106,7 @@ public class VendaController {
     }
 
     // Remover ingresso da venda
+    @Operation(summary = "Remover Ingresso da Venda", description = "Remove um Ingresso da Venda existente")
     @PutMapping("/removeringresso/{id}/{idIngressoVenda}")
     public ResponseEntity<VendaResponse> removerIngresso(@PathVariable long idIngressoVenda, @PathVariable Long id) {
     
@@ -102,6 +116,7 @@ public class VendaController {
     }
     
     // Buscar venda por ID
+    @Operation(summary = "Buscar Venda por ID", description = "Retorna uma Venda com o ID especificado")
     @GetMapping("/buscar/{id}")
     public ResponseEntity<VendaResponse> buscarVendaPorId(@PathVariable long id) {
         
@@ -111,6 +126,7 @@ public class VendaController {
     }
 
     // Buscar vendas por usuário
+    @Operation(summary = "Buscar Vendas por Usuário", description = "Retorna todas as Vendas de um Usuário com paginação e filtro QueryDSL")
     @GetMapping("/buscar/usuario/{idUsuario}")
     public ResponseEntity<Page<VendaResponse>> buscarVendaPorUsuario(@PathVariable Long idUsuario, Predicate predicate, Pageable pageable) {
 

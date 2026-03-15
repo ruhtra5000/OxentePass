@@ -26,14 +26,14 @@ public class OrganizadorController {
     @Autowired
     private OrganizadorService service;
 
-    @Operation(summary="Promove um Usuário à Organizador", description="Promove um usuário à organizador de eventos")
+    @Operation(summary = "Promover Usuário a Organizador", description = "Promove um Usuário comum a Organizador")
     @PostMapping("/promover")
     public ResponseEntity<String> promoverUsuario(@RequestBody @Valid OrganizadorRequest dto) {
         service.promoverUsuario(dto);
         return new ResponseEntity<String>("Usuário promovido a Organizador com sucesso!", HttpStatus.CREATED);
     }
 
-    @Operation(summary="Edita Organizador", description="Edita os dados de um organizador, exceto senha")
+    @Operation(summary = "Editar Organizador", description = "Edita os dados do Organizador com id especificado")
     @PutMapping
     public ResponseEntity<String> editarOrganizador(@RequestBody @Valid OrganizadorRequest dados) {
         service.editarOrganizador(dados.usuarioId(), dados);
@@ -44,7 +44,7 @@ public class OrganizadorController {
         );
     }
 
-    @Operation(summary="Lista Organizadores", description="Lista todos os organizadores")
+    @Operation(summary = "Listar Organizadores", description = "Retorna os Organizadores cadastrados")
     @GetMapping
     public ResponseEntity<Page<Organizador>> listarOrganizadores(Pageable pageable) {
         return new ResponseEntity<>(service.listarOrganizadores(pageable), HttpStatus.OK);

@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 
 /**
  * @author Guilherme Paes
- * Controller para manipular Usuario, através de UsuarioService
+ * Controller para manipular Usuário, através de UsuarioService
  */
 
 @RestController
@@ -34,7 +34,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioService service;
 
-    @Operation(summary="Cadastra Usuario", description="Cadastra um novo Usuario")
+    @Operation(summary = "Cadastrar Usuário", description = "Cadastra um novo Usuário")
     @PostMapping
     public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid UsuarioRequest dto) {
 
@@ -43,13 +43,13 @@ public class UsuarioController {
         return new ResponseEntity<String>("Usuário " + dto.nome() + " criado com sucesso!", HttpStatus.CREATED);
     }
 
-    @Operation(summary="Lista Usuarios", description="Lista todos os usuarios")
+    @Operation(summary = "Listar Usuários", description = "Retorna os Usuários cadastrados")
     @GetMapping
     public ResponseEntity<Page<Usuario>> listarUsuarios(Pageable pageable) {
         return new ResponseEntity<Page<Usuario>>(service.listarUsuarios(pageable), HttpStatus.OK);
     }
 
-    @Operation(summary="Edita Usuario", description="Edita os dados de um usuário")
+    @Operation(summary = "Editar Usuário", description = "Edita os dados do Usuário com id especificado")
     @PutMapping("/{id}")
     public ResponseEntity<String> editarUsuario(@PathVariable long id, @RequestBody @Valid UsuarioRequest dto) {
 
@@ -59,7 +59,7 @@ public class UsuarioController {
 
     }
 
-    @Operation(summary="Deleta Usuario", description="Deleta um usuário")
+    @Operation(summary = "Deletar Usuário", description = "Deleta o Usuário com id especificado")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarUsuario(@PathVariable long id) {
 
@@ -69,7 +69,7 @@ public class UsuarioController {
 
     }
 
-    @Operation(summary="Login Usuario", description="Autentica o CPF e Senha dum Usuario")
+    @Operation(summary = "Login de Usuário", description = "Autentica um Usuário com CPF e senha")
     @PostMapping("/login")
     public ResponseEntity<String> loginUsuario(@RequestBody @Valid UsuarioLoginRequest dto) {
 

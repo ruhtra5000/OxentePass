@@ -16,6 +16,13 @@ import com.oxentepass.oxentepass.entity.Venda;
 import com.oxentepass.oxentepass.repository.PagamentoRepository;
 import com.oxentepass.oxentepass.repository.VendaRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+
+/**
+ * @author Victor Cauã
+ * Controller para manipular webhook do Mercado Pago
+ */
+
 @RestController
 @RequestMapping("/webhook/mercadopago")
 public class MercadoPagoWebhookController {
@@ -30,6 +37,7 @@ public class MercadoPagoWebhookController {
     // Métodos
     
     // Recebe notificações do Mercado Pago sobre mudanças no status dos pagamentos
+    @Operation(summary = "Receber Notificações do Mercado Pago", description = "Recebe notificações do Mercado Pago sobre mudanças no status dos pagamentos")
     @PostMapping
     public void receber(@RequestBody Map<String, Object> payload) {
         try {

@@ -2,6 +2,7 @@ package com.oxentepass.oxentepass.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import com.oxentepass.oxentepass.controller.request.PontoVendaRequest;
@@ -30,6 +31,7 @@ class PontoVendaServiceTest {
     @Mock
     private PontoVendaRepository repository;
 
+    // Teste para cadastro de Ponto de Venda com CEP válido e verificação do formato do CEP salvo
     @Test
     void deveCadastrarPontoVendaComCepLimpo() {
 
@@ -46,6 +48,7 @@ class PontoVendaServiceTest {
         verify(repository, times(1)).save(pv);
     }
 
+    // Teste para rejeitar cadastro de Ponto de Venda duplicado
     @Test
     void deveRejeitarCadastroPontoVendaDuplicado() {
         // Arrange
