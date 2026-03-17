@@ -8,6 +8,7 @@ import com.oxentepass.oxentepass.controller.request.EventoRequest;
 import com.oxentepass.oxentepass.controller.request.IngressoRequest;
 import com.oxentepass.oxentepass.controller.request.PontoVendaRequest;
 import com.oxentepass.oxentepass.controller.request.TagRequest;
+import com.oxentepass.oxentepass.controller.response.EventoImagemResponse;
 import com.oxentepass.oxentepass.controller.response.EventoResponse;
 import com.oxentepass.oxentepass.entity.Evento;
 import com.oxentepass.oxentepass.service.EventoService;
@@ -79,6 +80,15 @@ public class EventoController {
     public ResponseEntity<Page<EventoResponse>> listarEventosFiltro (@QuerydslPredicate(root = Evento.class) Predicate predicate, Pageable pageable) {
         return new ResponseEntity<Page<EventoResponse>>(
             eventoService.listarEventosFiltro(predicate, pageable), 
+            HttpStatus.OK
+        );
+    }
+
+    @Operation(summary = "Listar Eventos com uma imagem e com filtro", description = "Filtra os Eventos com imagem c/ QueryDSL e paginação")
+    @GetMapping("/comImg")
+    public ResponseEntity<Page<EventoImagemResponse>> listarEventosComImagem (@QuerydslPredicate(root = Evento.class) Predicate predicate, Pageable pageable) {
+        return new ResponseEntity<Page<EventoImagemResponse>>(
+            eventoService.listarEventosComImagem(predicate, pageable), 
             HttpStatus.OK
         );
     }

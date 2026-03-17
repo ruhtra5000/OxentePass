@@ -1,6 +1,7 @@
 package com.oxentepass.oxentepass.service.implementation;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,10 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.oxentepass.oxentepass.controller.response.EventoImagemResponse;
 import com.oxentepass.oxentepass.controller.response.EventoResponse;
 import com.oxentepass.oxentepass.entity.Avaliacao;
 import com.oxentepass.oxentepass.entity.Evento;
 import com.oxentepass.oxentepass.entity.EventoComposto;
+import com.oxentepass.oxentepass.entity.Imagem;
 import com.oxentepass.oxentepass.entity.Ingresso;
 import com.oxentepass.oxentepass.entity.PontoVenda;
 import com.oxentepass.oxentepass.entity.Tag;
@@ -76,6 +79,36 @@ public class EventoServiceImpl implements EventoService {
         );
     }
 
+    private Page<EventoImagemResponse> paraDTOImgPage (Page<Evento> eventos) {
+        List<EventoImagemResponse> eventosComImg = new ArrayList<>();
+
+        for (Evento evento : eventos.toList()) {
+            Imagem img = selecionarImagem(imagemEventoService.listarImagens(evento.getId(), null).toList());
+            eventosComImg.add(EventoImagemResponse.paraDTO(evento, img));
+        }
+
+        return new PageImpl<>(
+            eventosComImg, 
+            eventos.getPageable(), 
+            eventos.getTotalElements()
+        );
+    }
+
+    private Imagem selecionarImagem (List<Imagem> imagens) {
+        if (imagens.isEmpty()) 
+            return null;
+
+        // Se houver alguma imagem de capa, retorna ela
+        for (Imagem imagem : imagens) {
+            if (imagem.isEhCapa())
+                return imagem;    
+        }
+
+        // Se não houver, retorna a primeira imagem
+        return imagens.get(0);
+
+    }
+
     // Checagem de data para eventos
     private boolean checagemDataEvento(Evento evento) {
         return evento.getDataHoraInicio().isAfter(evento.getDataHoraFim());
@@ -123,6 +156,13 @@ public class EventoServiceImpl implements EventoService {
     @Override
     public Page<EventoResponse> listarEventosFiltro(Predicate predicate, Pageable pageable) {
         return this.paraDTOPage(
+            eventoRepository.findAll(predicate, pageable)
+        );
+    }
+
+    @Override
+    public Page<EventoImagemResponse> listarEventosComImagem(Predicate predicate, Pageable pageable) {
+        return this.paraDTOImgPage(
             eventoRepository.findAll(predicate, pageable)
         );
     }

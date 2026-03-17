@@ -3,6 +3,7 @@ package com.oxentepass.oxentepass.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.oxentepass.oxentepass.controller.response.EventoImagemResponse;
 import com.oxentepass.oxentepass.controller.response.EventoResponse;
 import com.oxentepass.oxentepass.entity.Avaliacao;
 import com.oxentepass.oxentepass.entity.Evento;
@@ -18,6 +19,8 @@ public interface EventoService extends TagManipulacao {
     public Page<EventoResponse> listarEventosFiltro (Predicate predicate, Pageable pageable);
     public void editarEvento(Long idEvento, Evento evento);
     public void deletarEvento(long idEvento);
+    // Eventos com Imagem
+    public Page<EventoImagemResponse> listarEventosComImagem (Predicate predicate, Pageable pageable);
     // Tags -> TagManipulacao
     // Ingressos
     public void adicionarIngresso(long idEvento, Ingresso ingresso);
