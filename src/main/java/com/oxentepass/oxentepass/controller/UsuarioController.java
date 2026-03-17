@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oxentepass.oxentepass.controller.request.UsuarioLoginRequest;
 import com.oxentepass.oxentepass.controller.request.UsuarioRequest;
-import com.oxentepass.oxentepass.entity.Cidade;
 import com.oxentepass.oxentepass.entity.Usuario;
 import com.oxentepass.oxentepass.service.UsuarioService;
 
