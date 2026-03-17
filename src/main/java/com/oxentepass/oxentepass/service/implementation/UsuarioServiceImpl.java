@@ -48,14 +48,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         
         Optional<Usuario> optionalUser = repository.findByCpf(cpfLimpo);
 
-        if (optionalUser.isEmpty()) {
-            throw new RecursoNaoEncontradoException("Nenhum usuário encontrado para o cpf " + cpf);
-        }
-
         Usuario usuario = optionalUser.get();
 
-        if (!passwordEncoder.matches(senha, usuario.getSenha())) {
-            throw new EstadoInvalidoException("Senha incorreta para este usuário");
+        if (optionalUser.isEmpty() || !passwordEncoder.matches(senha, usuario.getSenha())) {
+            throw new RecursoNaoEncontradoException("CPF ou senha inválidos!");
         }
     };
 
