@@ -74,24 +74,21 @@ public interface EventoRepository extends JpaRepository<Evento, Long>,
         bindings.bind(root.dataHoraInicio)
                 .as("naoIniciados") //Eventos que ainda não começaram
                 .first((path, value) -> {
-                    LocalDateTime agora = LocalDateTime.now();
-                    return root.dataHoraInicio.after(agora);
+                    return root.dataHoraInicio.after(value);
                 });
         
-        bindings.bind(root.dataHoraInicio)
+        bindings.bind(root.dataHoraFim)
                 .as("ativos") //Eventos ocorrendo
                 .first((path, value) -> {
-                    LocalDateTime agora = LocalDateTime.now();
-                    return root.dataHoraInicio.before(agora)
-                         .and(root.dataHoraFim.after(agora));
+                    return root.dataHoraInicio.before(value)
+                         .and(root.dataHoraFim.after(value));
                 });
 
-        bindings.bind(root.dataHoraFim)
-                .as("finalizados") //Eventos que terminaram
-                .first((path, value) -> {
-                    LocalDateTime agora = LocalDateTime.now();
-                    return root.dataHoraFim.before(agora);
-                });
+        // bindings.bind(root.dataHoraFim)
+        //         .as("finalizados") //Eventos que terminaram
+        //         .first((path, value) -> {
+        //             return root.dataHoraFim.before(value);
+        //         });
 
         // Bind para qualquer conjunto de tags
         bindings.bind(root.tags.any().tag)
