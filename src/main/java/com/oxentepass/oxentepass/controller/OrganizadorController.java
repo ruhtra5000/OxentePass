@@ -3,6 +3,7 @@ package com.oxentepass.oxentepass.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import com.oxentepass.oxentepass.controller.request.OrganizadorRequest;
 import com.oxentepass.oxentepass.entity.Organizador;
 import com.oxentepass.oxentepass.service.OrganizadorService;
+import com.querydsl.core.types.Predicate;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 /**
  * @author Guilherme Paes
- * Controller para manipular Organizador, através de OrganizadorService
+ *         Controller para manipular Organizador, através de OrganizadorService
  */
 
 @RestController
@@ -37,16 +39,25 @@ public class OrganizadorController {
     @PutMapping
     public ResponseEntity<String> editarOrganizador(@RequestBody @Valid OrganizadorRequest dados) {
         service.editarOrganizador(dados.usuarioId(), dados);
-        
+
         return new ResponseEntity<String>(
-            "Organizador com id " + dados.usuarioId() + " atualizado com sucesso!",
-            HttpStatus.OK
-        );
+                "Organizador com id " + dados.usuarioId() + " atualizado com sucesso!",
+                HttpStatus.OK);
     }
 
     @Operation(summary = "Listar Organizadores", description = "Retorna os Organizadores cadastrados")
     @GetMapping
     public ResponseEntity<Page<Organizador>> listarOrganizadores(Pageable pageable) {
         return new ResponseEntity<>(service.listarOrganizadores(pageable), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Listar Organizadores com Filtro", description = "Retorna os Organizadores cadastrados que satisfazem o filtro")
+    @GetMapping("/filtro")
+    public ResponseEntity<Page<Organizador>> listarOrganizadoresFiltro(
+            @QuerydslPredicate(root = Organizador.class) Predicate predicate,
+            Pageable pageable) {
+        return new ResponseEntity<Page<Organizador>>(
+                service.listarOrganizadoresFiltro(predicate, pageable),
+                HttpStatus.OK);
     }
 }

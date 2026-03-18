@@ -14,6 +14,7 @@ import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.OrganizadorRepository;
 import com.oxentepass.oxentepass.repository.UsuarioRepository;
 import com.oxentepass.oxentepass.service.OrganizadorService;
+import com.querydsl.core.types.Predicate;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -63,6 +64,11 @@ public class OrganizadorServiceImpl implements OrganizadorService {
     @Override
     public Page<Organizador> listarOrganizadores(Pageable pageable) {
         return organizadorRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Organizador> listarOrganizadoresFiltro(Predicate predicate, Pageable pageable){
+        return organizadorRepository.findAll(predicate, pageable);
     }
 
     // Métodos auxiliares
