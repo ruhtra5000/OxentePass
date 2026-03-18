@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.oxentepass.oxentepass.entity.Usuario;
-import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 import com.oxentepass.oxentepass.exceptions.RecursoDuplicadoException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.UsuarioRepository;
