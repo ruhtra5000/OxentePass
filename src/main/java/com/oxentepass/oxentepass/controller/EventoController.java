@@ -10,11 +10,15 @@ import com.oxentepass.oxentepass.controller.request.PontoVendaRequest;
 import com.oxentepass.oxentepass.controller.request.TagRequest;
 import com.oxentepass.oxentepass.controller.response.EventoImagemResponse;
 import com.oxentepass.oxentepass.controller.response.EventoResponse;
+import com.oxentepass.oxentepass.entity.Avaliacao;
 import com.oxentepass.oxentepass.entity.Evento;
+import com.oxentepass.oxentepass.entity.Usuario;
+import com.oxentepass.oxentepass.service.AuthSessionService;
 import com.oxentepass.oxentepass.service.EventoService;
 import com.querydsl.core.types.Predicate;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +46,9 @@ public class EventoController {
 
     @Autowired
     private EventoService eventoService;
-    
-    //Operações Básicas
-    @Operation(summary = "Criar novo Evento Simples", description = "Cria um novo EventoSimples, que não suporta sub-eventos")
+    @Autowired
+    private AuthSessionService authSessionService;
+
     @PostMapping("/simples")
     public ResponseEntity<String> criarEventoSimples (@RequestBody @Valid EventoRequest dto) {
         eventoService.criarEvento(dto.paraEntidade(true));
@@ -209,9 +213,14 @@ public class EventoController {
     //Avaliações
     @Operation(summary = "Adicionar Avaliação a Evento", description = "Cria uma nova Avaliação e a vincula ao Evento com id especificado")
     @PatchMapping("/{idEvento}/addAvaliacao")
-    public ResponseEntity<String> adicionarAvaliacao (@PathVariable long idEvento, @RequestBody @Valid AvaliacaoRequest dto) {
-        eventoService.adicionarAvaliacao(idEvento, dto.paraEntidade());
-        
+    public ResponseEntity<String> adicionarAvaliacao(@PathVariable long idEvento, @RequestBody @Valid AvaliacaoRequest dto, HttpServletRequest request) {
+        Usuario usuario = authSessionService.obterUsuarioAutenticado(request);
+        Avaliacao avaliacao = dto.paraEntidade();
+        avaliacao.setUsuarioId(usuario.getId());
+        avaliacao.setNomeUsuario(usuario.getNome());
+
+        eventoService.adicionarAvaliacao(idEvento, avaliacao);
+
         return new ResponseEntity<String>(
             "Avaliação adicionada ao evento com id " + idEvento + " com sucesso!",
             HttpStatus.CREATED

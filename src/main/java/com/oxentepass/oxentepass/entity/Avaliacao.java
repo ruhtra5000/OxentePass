@@ -13,5 +13,6 @@ public class Avaliacao {
     private long id;
     private int nota; //Valores no intervalo [1, 5]
     private String comentario;
-    // TODO: vincular avaliação a um usuário (?)
+    private Long usuarioId;
+    private String nomeUsuario;
 }
