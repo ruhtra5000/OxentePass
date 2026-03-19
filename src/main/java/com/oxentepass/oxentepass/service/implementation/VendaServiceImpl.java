@@ -6,12 +6,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.oxentepass.oxentepass.entity.Ingresso;
 import com.oxentepass.oxentepass.entity.IngressoVenda;
 import com.oxentepass.oxentepass.entity.MetodoPagamento;
 import com.oxentepass.oxentepass.entity.Pagamento;
 import com.oxentepass.oxentepass.entity.Venda;
+import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.VendaRepository;
+import com.oxentepass.oxentepass.repository.IngressoRepository;
 import com.oxentepass.oxentepass.service.VendaService;
 import com.querydsl.core.types.Predicate;
 
@@ -21,6 +24,9 @@ public class VendaServiceImpl implements VendaService {
     // Repositórios
     @Autowired
     private VendaRepository vendaRepository;
+
+    @Autowired
+    private IngressoRepository ingressoRepository;
 
     // Métodos
 
@@ -97,30 +103,53 @@ public class VendaServiceImpl implements VendaService {
     @Override
     public Venda adicionarIngresso(IngressoVenda ingressoVenda, long id) {
         Venda venda = buscarVendaPorId(id);
-        venda.addIngresso(ingressoVenda);
+        
+        Ingresso ingressoReal = ingressoRepository.findById(ingressoVenda.getIngresso().getId())
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Ingresso não encontrado"));
+
+        ingressoReal.reduzirQuantidade(ingressoVenda.getQuantidade());
+
+        ingressoVenda.setIngresso(ingressoReal);
+        ingressoVenda.calcularValorTotal();
+        
+        venda.getIngressos().add(ingressoVenda);
+        venda.calcularValorTotal();
+
         return vendaRepository.save(venda);
     }
 
     // Remove um ingresso de uma venda existente
     @Override
-    public Venda removerIngresso(Long idIngressoVenda, long id) {
+    public Venda removerIngresso(Long idIngressoBase, long idVenda, int quantidadeParaRemover) {
+        Venda venda = buscarVendaPorId(idVenda);
+        IngressoVenda itemNaVenda = null;
 
-        Venda venda = buscarVendaPorId(id);
-
-        IngressoVenda ingressoVenda = null;
-
+        // 1. Localiza o lote de ingressos correspondente na venda
         for (IngressoVenda i : venda.getIngressos()) {
-            if (i.getId() == (idIngressoVenda)) {
-                ingressoVenda = i;
+            if (i.getIngresso().getId() == idIngressoBase) {
+                itemNaVenda = i;
                 break;
             }
         }
 
-        if (ingressoVenda == null) {
-            throw new RecursoNaoEncontradoException("Ingresso não encontrado");
+        if (itemNaVenda == null) {
+            throw new RecursoNaoEncontradoException("Ingresso não encontrado nesta venda");
         }
 
-        venda.removerIngresso(ingressoVenda);
+        if (quantidadeParaRemover > itemNaVenda.getQuantidade()) {
+            throw new com.oxentepass.oxentepass.exceptions.EstadoInvalidoException("Quantidade a remover maior que a disponível na venda.");
+        }
+
+        itemNaVenda.getIngresso().devolverQuantidade(quantidadeParaRemover);
+
+        if (quantidadeParaRemover == itemNaVenda.getQuantidade()) {
+            venda.getIngressos().remove(itemNaVenda);
+        } else {
+            itemNaVenda.setQuantidade(itemNaVenda.getQuantidade() - quantidadeParaRemover);
+            itemNaVenda.calcularValorTotal();
+        }
+
+        venda.calcularValorTotal();
         return vendaRepository.save(venda);
     }
 }

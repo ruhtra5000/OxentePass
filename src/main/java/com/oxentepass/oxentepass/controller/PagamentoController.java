@@ -3,6 +3,7 @@ package com.oxentepass.oxentepass.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.oxentepass.oxentepass.controller.request.PagamentoRequest;
 import com.oxentepass.oxentepass.entity.Pagamento;
+import com.oxentepass.oxentepass.entity.Venda;
 import com.oxentepass.oxentepass.service.MercadoPagoService;
 import com.oxentepass.oxentepass.service.PagamentoService;
 import com.querydsl.core.types.Predicate;
@@ -55,7 +57,7 @@ public class PagamentoController {
     // Listar todos os pagamentos
     @Operation(summary = "Listar Pagamentos", description = "Lista todos os Pagamentos cadastrados")
     @GetMapping("/listar")
-    public ResponseEntity<Page<Pagamento>> listarTodosPagamentos (Pageable pageable) {
+    public ResponseEntity<Page<Pagamento>> listarTodosPagamentos (@QuerydslPredicate(root = Pagamento.class) Pageable pageable) {
         return new ResponseEntity<Page<Pagamento>>(
             pagamentoService.listarTodosPagamentos(pageable), 
             HttpStatus.OK
@@ -65,7 +67,7 @@ public class PagamentoController {
     // Filtrar pagamentos
     @Operation(summary = "Filtrar Pagamentos", description = "Filtra os Pagamentos cadastrados de acordo com os parâmetros fornecidos")
     @GetMapping("/filtrar")
-    public ResponseEntity<Page<Pagamento>> filtrarPagamentos (Predicate predicate, Pageable pageable) {
+    public ResponseEntity<Page<Pagamento>> filtrarPagamentos (@QuerydslPredicate(root = Pagamento.class) Predicate predicate, Pageable pageable) {
         return new ResponseEntity<Page<Pagamento>>(
             pagamentoService.filtrarPagamentos(predicate, pageable), 
             HttpStatus.OK

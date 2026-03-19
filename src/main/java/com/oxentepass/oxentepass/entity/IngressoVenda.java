@@ -26,15 +26,11 @@ public class IngressoVenda {
 
     // Setters
     public void setQuantidade(int quantidade) {
-        if (quantidade > this.ingresso.getQuantidadeDisponivel()) 
-            throw new EstadoInvalidoException("Quantidade de ingressos inválida.");
 
         this.quantidade = quantidade;
     }
 
     public void setMeiaEntrada(boolean meiaEntrada) {
-        if (meiaEntrada && !this.ingresso.isTemMeiaEntrada()) 
-            throw new EstadoInvalidoException("O tipo de ingresso " + ingresso.getTipo() +  " não suporta meia entrada.");
 
         this.meiaEntrada = meiaEntrada;
     }

@@ -22,5 +22,5 @@ public interface VendaService {
     public Venda confirmarPagamento(long idVenda, MetodoPagamento metodo);
     // Ingressos
     public Venda adicionarIngresso(IngressoVenda ingressoVenda, long id);
-    public Venda removerIngresso(Long IdIngressoVenda, long id);
+    public Venda removerIngresso(Long idIngressoBase, long idVenda, int quantidadeParaRemover);
 }

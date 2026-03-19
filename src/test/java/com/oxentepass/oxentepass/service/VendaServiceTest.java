@@ -135,7 +135,7 @@ class VendaServiceTest {
 
         when(vendaRepository.save(any())).thenReturn(venda);
 
-        Venda resultado = vendaService.removerIngresso(10L, 1L);
+        Venda resultado = vendaService.removerIngresso(10L, 1L, 1);
 
         assertTrue(resultado.getIngressos().isEmpty());
     }
@@ -146,7 +146,7 @@ class VendaServiceTest {
         when(vendaRepository.findById(1L)).thenReturn(Optional.of(venda));
 
         assertThrows(RecursoNaoEncontradoException.class, () ->
-            vendaService.removerIngresso(99L, 1L)
+            vendaService.removerIngresso(10L, 1L, 1)
         );
 
         verify(vendaRepository, never()).save(any());

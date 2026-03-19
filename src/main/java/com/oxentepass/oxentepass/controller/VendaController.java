@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oxentepass.oxentepass.controller.request.VendaRequest;
 import com.oxentepass.oxentepass.controller.response.VendaResponse;
+import com.oxentepass.oxentepass.entity.Evento;
 import com.oxentepass.oxentepass.entity.IngressoVenda;
 import com.oxentepass.oxentepass.service.VendaService;
 import com.querydsl.core.types.Predicate;
@@ -21,6 +22,9 @@ import io.swagger.v3.oas.annotations.Operation;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
+
+import com.oxentepass.oxentepass.entity.Venda;
 
 import jakarta.validation.Valid;
 
@@ -76,7 +80,7 @@ public class VendaController {
     // Filtrar vendas com QueryDSL
     @Operation(summary = "Filtrar Vendas", description = "Filtra as Vendas com QueryDSL e paginação")
     @GetMapping("/filtrar")
-    public ResponseEntity<Page<VendaResponse>> filtrarVendas(Predicate predicate, Pageable pageable){
+    public ResponseEntity<Page<VendaResponse>> filtrarVendas(@QuerydslPredicate(root = Venda.class) Predicate predicate, Pageable pageable){
 
         return ResponseEntity.ok(
             vendaService.filtrarVendas(predicate, pageable).map(VendaResponse::paraDTO)
@@ -106,13 +110,17 @@ public class VendaController {
     }
 
     // Remover ingresso da venda
-    @Operation(summary = "Remover Ingresso da Venda", description = "Remove um Ingresso da Venda existente")
-    @PutMapping("/removeringresso/{id}/{idIngressoVenda}")
-    public ResponseEntity<VendaResponse> removerIngresso(@PathVariable long idIngressoVenda, @PathVariable Long id) {
-    
-        return ResponseEntity.ok(
-            VendaResponse.paraDTO(vendaService.removerIngresso(idIngressoVenda, id))
-        );
+    @Operation(summary = "Remover Ingresso da Venda", description = "Remove uma quantidade específica de um Ingresso da Venda")
+    @PutMapping("/removeringresso/{id}/{idIngressoBase}")
+    public ResponseEntity<VendaResponse> removerIngresso(@PathVariable Long id,  @PathVariable Long idIngressoBase, @RequestBody java.util.Map<String, Integer> payload) {
+        
+            Integer quantidade = payload.get("quantidade");
+            
+            if (quantidade == null) quantidade = 1; 
+
+            return ResponseEntity.ok(
+                VendaResponse.paraDTO(vendaService.removerIngresso(idIngressoBase, id, quantidade))
+            );
     }
     
     // Buscar venda por ID
@@ -128,7 +136,7 @@ public class VendaController {
     // Buscar vendas por usuário
     @Operation(summary = "Buscar Vendas por Usuário", description = "Retorna todas as Vendas de um Usuário com paginação e filtro QueryDSL")
     @GetMapping("/buscar/usuario/{idUsuario}")
-    public ResponseEntity<Page<VendaResponse>> buscarVendaPorUsuario(@PathVariable Long idUsuario, Predicate predicate, Pageable pageable) {
+    public ResponseEntity<Page<VendaResponse>> buscarVendaPorUsuario(@PathVariable Long idUsuario, @QuerydslPredicate(root = Venda.class) Predicate predicate, Pageable pageable) {
 
         return ResponseEntity.ok(
             vendaService.buscarVendaPorUsuario(idUsuario, predicate, pageable).map(VendaResponse::paraDTO)

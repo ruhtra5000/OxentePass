@@ -13,8 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.oxentepass.oxentepass.entity.Ingresso;
+import com.oxentepass.oxentepass.entity.Pagamento;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 
 /**
  * @author Victor Cauã
@@ -46,7 +49,7 @@ public class IngressoController {
     // Filtrar ingressos
     @Operation(summary = "Filtrar Ingressos", description = "Filtra Ingressos com base em critérios dinâmicos")
     @GetMapping("/filtrar")
-    public ResponseEntity<Page<Ingresso>> filtrarIngressos (Predicate predicate, Pageable pageable) {
+    public ResponseEntity<Page<Ingresso>> filtrarIngressos (@QuerydslPredicate(root = Ingresso.class) Predicate predicate, Pageable pageable) {
         return new ResponseEntity<Page<Ingresso>>(
             ingressoService.filtrarIngressos(predicate, pageable), 
             HttpStatus.OK

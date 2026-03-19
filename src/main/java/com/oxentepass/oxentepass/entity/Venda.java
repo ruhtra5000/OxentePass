@@ -9,6 +9,7 @@ import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 import com.oxentepass.oxentepass.exceptions.OperacaoProibidaException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,7 +30,7 @@ public class Venda {
     @ManyToOne
     private Usuario usuario;
 
-    @ManyToMany 
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<IngressoVenda> ingressos;
 
     @OneToOne
