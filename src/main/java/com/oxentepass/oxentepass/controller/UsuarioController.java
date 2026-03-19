@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.oxentepass.oxentepass.controller.request.UsuarioLoginRequest;
 import com.oxentepass.oxentepass.controller.request.UsuarioRequest;
 import com.oxentepass.oxentepass.controller.response.AuthResponse;
+import com.oxentepass.oxentepass.controller.response.UsuarioPublicoResponse;
+import com.oxentepass.oxentepass.controller.response.UsuarioResponse;
 import com.oxentepass.oxentepass.entity.Usuario;
 import com.oxentepass.oxentepass.exceptions.NaoAutenticadoException;
 import com.oxentepass.oxentepass.service.UsuarioService;
@@ -43,6 +45,20 @@ public class UsuarioController {
     @Autowired
     private UsuarioService service;
 
+    // Método auxiliar
+    private Usuario obterUsuarioDaSessao(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute(SESSION_USER_ID) == null) {
+            throw new NaoAutenticadoException("Nenhum usuário autenticado na sessão atual.");
+        }
+
+        long usuarioId = (long) session.getAttribute(SESSION_USER_ID);
+
+        return service.buscarUsuarioPorId(usuarioId);
+    }
+
+    // Operações
     @Operation(summary = "Cadastrar Usuário", description = "Cadastra um novo Usuário")
     @PostMapping
     public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid UsuarioRequest dto) {
@@ -89,7 +105,6 @@ public class UsuarioController {
 
     @Operation(summary = "Login de Usuário", description = "Autentica um Usuário com CPF e senha")
     @PostMapping("/login")
-    public ResponseEntity<String> loginUsuario(@RequestBody @Valid UsuarioLoginRequest dto) {
     public ResponseEntity<AuthResponse> loginUsuario(
             @RequestBody @Valid UsuarioLoginRequest dto,
             HttpServletRequest request) {
@@ -101,8 +116,19 @@ public class UsuarioController {
         return new ResponseEntity<AuthResponse>(AuthResponse.paraDTO(usuario), HttpStatus.OK);
     }
 
-        service.loginUsuario(dto.cpf(), dto.senha());
+    @Operation(summary = "Perfil do usuário autenticado", description = "Retorna os dados completos do usuário autenticado na sessão atual")
+    @GetMapping("/me")
+    public ResponseEntity<UsuarioResponse> buscarMeuPerfil(HttpServletRequest request) {
+        Usuario usuario = obterUsuarioDaSessao(request);
 
-        return new ResponseEntity<String>("O usuário com CPF " + dto.cpf() + " está autenticado!", HttpStatus.OK);
+        return new ResponseEntity<UsuarioResponse>(UsuarioResponse.paraDTO(usuario), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Perfil público do usuário", description = "Retorna somente os dados públicos do usuário informado")
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioPublicoResponse> buscarPerfilPublico(@PathVariable long id) {
+        Usuario usuario = service.buscarUsuarioPorId(id);
+
+        return new ResponseEntity<UsuarioPublicoResponse>(UsuarioPublicoResponse.paraDTO(usuario), HttpStatus.OK);
     }
 }
