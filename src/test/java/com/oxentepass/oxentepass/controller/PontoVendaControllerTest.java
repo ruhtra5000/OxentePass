@@ -21,7 +21,6 @@ import tools.jackson.databind.ObjectMapper;
  * Testes de integração para PontoVendaController
  */
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")

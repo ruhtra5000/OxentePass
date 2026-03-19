@@ -5,11 +5,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import com.querydsl.core.types.Predicate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.oxentepass.oxentepass.entity.Usuario;
-import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 import com.oxentepass.oxentepass.exceptions.RecursoDuplicadoException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.UsuarioRepository;
@@ -47,14 +47,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         
         Optional<Usuario> optionalUser = repository.findByCpf(cpfLimpo);
 
-        if (optionalUser.isEmpty()) {
-            throw new RecursoNaoEncontradoException("Nenhum usuário encontrado para o cpf " + cpf);
-        }
-
         Usuario usuario = optionalUser.get();
 
-        if (!passwordEncoder.matches(senha, usuario.getSenha())) {
-            throw new EstadoInvalidoException("Senha incorreta para este usuário");
+        if (optionalUser.isEmpty() || !passwordEncoder.matches(senha, usuario.getSenha())) {
+            throw new RecursoNaoEncontradoException("CPF ou senha inválidos!");
         }
     };
 
@@ -94,6 +90,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Page<Usuario> listarUsuarios(Pageable pageable) {
         return repository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Usuario> listarUsuariosFiltro(Predicate predicate, Pageable pageable) {
+        return repository.findAll(predicate, pageable);
     }
 
 }

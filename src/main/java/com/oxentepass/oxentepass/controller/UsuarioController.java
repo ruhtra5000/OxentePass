@@ -3,6 +3,9 @@ package com.oxentepass.oxentepass.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
+
+import com.querydsl.core.types.Predicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,6 +50,15 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<Page<Usuario>> listarUsuarios(Pageable pageable) {
         return new ResponseEntity<Page<Usuario>>(service.listarUsuarios(pageable), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Busca Usuário com filtro", description = "Busca os Usuários cadastrados com filtro e paginação")
+    @GetMapping("/filtro")
+    public ResponseEntity<Page<Usuario>> listarUsuariosFiltro(@QuerydslPredicate(root = Usuario.class) Predicate predicate, Pageable pageable) {
+        return new ResponseEntity<Page<Usuario>>(
+            service.listarUsuariosFiltro(predicate, pageable),
+            HttpStatus.OK
+        );
     }
 
     @Operation(summary = "Editar Usuário", description = "Edita os dados do Usuário com id especificado")

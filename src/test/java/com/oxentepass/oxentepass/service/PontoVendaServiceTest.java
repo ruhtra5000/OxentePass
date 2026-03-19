@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * Testes unitários para PontoVendaService
  */
 
-
 @ExtendWith(MockitoExtension.class)
 class PontoVendaServiceTest {
 
