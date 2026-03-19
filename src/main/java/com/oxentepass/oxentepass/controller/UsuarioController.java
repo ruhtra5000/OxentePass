@@ -23,12 +23,11 @@ import com.oxentepass.oxentepass.controller.response.AuthResponse;
 import com.oxentepass.oxentepass.controller.response.UsuarioPublicoResponse;
 import com.oxentepass.oxentepass.controller.response.UsuarioResponse;
 import com.oxentepass.oxentepass.entity.Usuario;
-import com.oxentepass.oxentepass.exceptions.NaoAutenticadoException;
 import com.oxentepass.oxentepass.service.UsuarioService;
+import com.oxentepass.oxentepass.service.implementation.AuthSessionServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 /**
@@ -40,25 +39,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/usuario")
 public class UsuarioController {
 
-    private static final String SESSION_USER_ID = "usuarioId";
-
     @Autowired
     private UsuarioService service;
+    @Autowired
+    private AuthSessionServiceImpl authSessionService;
 
-    // Método auxiliar
-    private Usuario obterUsuarioDaSessao(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if (session == null || session.getAttribute(SESSION_USER_ID) == null) {
-            throw new NaoAutenticadoException("Nenhum usuário autenticado na sessão atual.");
-        }
-
-        long usuarioId = (long) session.getAttribute(SESSION_USER_ID);
-
-        return service.buscarUsuarioPorId(usuarioId);
-    }
-
-    // Operações
     @Operation(summary = "Cadastrar Usuário", description = "Cadastra um novo Usuário")
     @PostMapping
     public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid UsuarioRequest dto) {
@@ -68,17 +53,20 @@ public class UsuarioController {
         return new ResponseEntity<String>("Usuário " + dto.nome() + " criado com sucesso!", HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Listar Usuários", description = "Retorna os Usuários cadastrados")
+    @Operation(summary = "Listar Usuários", description = "Retorna os perfis públicos dos Usuários cadastrados")
     @GetMapping
-    public ResponseEntity<Page<Usuario>> listarUsuarios(Pageable pageable) {
-        return new ResponseEntity<Page<Usuario>>(service.listarUsuarios(pageable), HttpStatus.OK);
+    public ResponseEntity<Page<UsuarioPublicoResponse>> listarUsuarios(Pageable pageable) {
+        return new ResponseEntity<Page<UsuarioPublicoResponse>>(
+            service.listarUsuarios(pageable).map(UsuarioPublicoResponse::paraDTO),
+            HttpStatus.OK
+        );
     }
 
-    @Operation(summary = "Busca Usuário com filtro", description = "Busca os Usuários cadastrados com filtro e paginação")
+    @Operation(summary = "Busca Usuário com filtro", description = "Busca os perfis públicos dos Usuários cadastrados com filtro e paginação")
     @GetMapping("/filtro")
-    public ResponseEntity<Page<Usuario>> listarUsuariosFiltro(@QuerydslPredicate(root = Usuario.class) Predicate predicate, Pageable pageable) {
-        return new ResponseEntity<Page<Usuario>>(
-            service.listarUsuariosFiltro(predicate, pageable),
+    public ResponseEntity<Page<UsuarioPublicoResponse>> listarUsuariosFiltro(@QuerydslPredicate(root = Usuario.class) Predicate predicate, Pageable pageable) {
+        return new ResponseEntity<Page<UsuarioPublicoResponse>>(
+            service.listarUsuariosFiltro(predicate, pageable).map(UsuarioPublicoResponse::paraDTO),
             HttpStatus.OK
         );
     }
@@ -110,8 +98,7 @@ public class UsuarioController {
             HttpServletRequest request) {
 
         Usuario usuario = service.loginUsuario(dto.cpf(), dto.senha());
-        HttpSession session = request.getSession(true);
-        session.setAttribute(SESSION_USER_ID, usuario.getId());
+        authSessionService.autenticarSessao(request, usuario);
 
         return new ResponseEntity<AuthResponse>(AuthResponse.paraDTO(usuario), HttpStatus.OK);
     }
@@ -119,7 +106,7 @@ public class UsuarioController {
     @Operation(summary = "Perfil do usuário autenticado", description = "Retorna os dados completos do usuário autenticado na sessão atual")
     @GetMapping("/me")
     public ResponseEntity<UsuarioResponse> buscarMeuPerfil(HttpServletRequest request) {
-        Usuario usuario = obterUsuarioDaSessao(request);
+        Usuario usuario = authSessionService.obterUsuarioAutenticado(request);
 
         return new ResponseEntity<UsuarioResponse>(UsuarioResponse.paraDTO(usuario), HttpStatus.OK);
     }
