@@ -14,7 +14,7 @@ import com.querydsl.core.types.Predicate;
 
 public interface EventoService extends TagManipulacao {
     // Operações Básicas
-    public void criarEvento(Evento evento);
+    public EventoResponse criarEvento(Evento evento);
     public Page<EventoResponse> listarEventos(Pageable pageable);
     public Page<EventoResponse> listarEventosFiltro (Predicate predicate, Pageable pageable);
     public void editarEvento(Long idEvento, Evento evento);

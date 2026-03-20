@@ -50,22 +50,18 @@ public class EventoController {
     private AuthSessionService authSessionService;
 
     @PostMapping("/simples")
-    public ResponseEntity<String> criarEventoSimples (@RequestBody @Valid EventoRequest dto) {
-        eventoService.criarEvento(dto.paraEntidade(true));
-        
-        return new ResponseEntity<String>(
-            "Evento simples " + dto.nome() + " criado com sucesso!", 
+    public ResponseEntity<EventoResponse> criarEventoSimples (@RequestBody @Valid EventoRequest dto) {
+        return new ResponseEntity<EventoResponse>(
+            eventoService.criarEvento(dto.paraEntidade(true)), 
             HttpStatus.CREATED
         );
     }
 
     @Operation(summary = "Criar novo Evento Composto", description = "Cria um novo EventoComposto, que suporta sub-eventos")
     @PostMapping("/composto")
-    public ResponseEntity<String> criarEventoComposto (@RequestBody @Valid EventoRequest dto) {
-        eventoService.criarEvento(dto.paraEntidade(false));
-        
-        return new ResponseEntity<String>(
-            "Evento composto " + dto.nome() + " criado com sucesso!", 
+    public ResponseEntity<EventoResponse> criarEventoComposto (@RequestBody @Valid EventoRequest dto) {
+        return new ResponseEntity<EventoResponse>(
+            eventoService.criarEvento(dto.paraEntidade(false)), 
             HttpStatus.CREATED
         );
     }

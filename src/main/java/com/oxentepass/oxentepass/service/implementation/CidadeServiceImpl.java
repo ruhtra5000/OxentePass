@@ -52,10 +52,10 @@ public class CidadeServiceImpl implements CidadeService {
 
     // Operações Básicas
     @Override
-    public void criarCidade(Cidade cidade) {
+    public Cidade criarCidade(Cidade cidade) {
         verificarCidadePorNome(cidade);
 
-        cidadeRepository.save(cidade);
+        return cidadeRepository.save(cidade);
     }
 
     @Override

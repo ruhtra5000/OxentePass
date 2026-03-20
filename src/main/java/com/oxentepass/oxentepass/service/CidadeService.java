@@ -9,7 +9,7 @@ import com.querydsl.core.types.Predicate;
 
 public interface CidadeService extends TagManipulacao {
     // Operações básicas
-    public void criarCidade(Cidade cidade);
+    public Cidade criarCidade(Cidade cidade);
     public Page<Cidade> listarCidades(Pageable pageable);
     public Page<Cidade> listarCidadesFiltro(Predicate predicate, Pageable pageable);
     public void editarCidade(long idCidade, Cidade cidade);

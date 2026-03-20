@@ -139,11 +139,11 @@ public class EventoServiceImpl implements EventoService {
 
     // Operações Básicas
     @Override
-    public void criarEvento(Evento evento) {
+    public EventoResponse criarEvento(Evento evento) {
         if(checagemDataEvento(evento))
             throw new EstadoInvalidoException("A data e hora de início do evento deve ser anterior a de fim.");
-
-        eventoRepository.save(evento);
+        
+        return EventoResponse.paraDTO(eventoRepository.save(evento));
     }
 
     @Override
