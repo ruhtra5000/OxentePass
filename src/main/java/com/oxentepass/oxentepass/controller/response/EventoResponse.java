@@ -7,6 +7,7 @@ import com.oxentepass.oxentepass.entity.Avaliacao;
 import com.oxentepass.oxentepass.entity.Cidade;
 import com.oxentepass.oxentepass.entity.Endereco;
 import com.oxentepass.oxentepass.entity.Evento;
+import com.oxentepass.oxentepass.entity.EventoSimples;
 import com.oxentepass.oxentepass.entity.Ingresso;
 import com.oxentepass.oxentepass.entity.PontoVenda;
 import com.oxentepass.oxentepass.entity.Tag;
@@ -27,7 +28,8 @@ public record EventoResponse(
     Endereco endereco,
     List<PontoVenda> pontosVenda,
     List<Avaliacao> avaliacoes,
-    double mediaAvaliacao
+    double mediaAvaliacao,
+    boolean ehSimples
 ) {
     public static EventoResponse paraDTO(Evento evento) {
         return new EventoResponse (
@@ -38,7 +40,8 @@ public record EventoResponse(
             evento.getDataHoraFim(), evento.getClassificacao(), 
             evento.getEmailContato(), evento.getTelefoneContato(), 
             evento.getEndereco(), evento.getPontosVenda(), 
-            evento.getAvaliacoes(), evento.getMediaAvaliacao()
+            evento.getAvaliacoes(), evento.getMediaAvaliacao(),
+            (evento instanceof EventoSimples)
         );
-    }
+    }   
 } 
