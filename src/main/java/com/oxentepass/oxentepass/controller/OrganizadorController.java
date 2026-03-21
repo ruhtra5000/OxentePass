@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.oxentepass.oxentepass.controller.request.OrganizadorEdicaoRequest;
 import com.oxentepass.oxentepass.controller.request.OrganizadorRequest;
 import com.oxentepass.oxentepass.controller.response.OrganizadorResponse;
 import com.oxentepass.oxentepass.entity.Organizador;
@@ -54,6 +55,19 @@ public class OrganizadorController {
 
         return new ResponseEntity<String>(
                 "Organizador com id " + dados.usuarioId() + " atualizado com sucesso!",
+                HttpStatus.OK);
+    }
+
+    @Operation(summary = "Editar parcialmente Organizador", description = "Edita apenas telefone e biografia do organizador autenticado")
+    @PatchMapping("/me")
+    public ResponseEntity<String> editarMeuPerfilOrganizador(@RequestBody @Valid OrganizadorEdicaoRequest dados, HttpServletRequest request) {
+        autorizacaoService.exigirUsuarioOrganizador(request);
+
+        long usuarioId = authSessionService.obterUsuarioAutenticado(request).getId();
+        service.editarOrganizadorParcial(usuarioId, dados);
+
+        return new ResponseEntity<String>(
+                "Organizador com id " + usuarioId + " atualizado com sucesso!",
                 HttpStatus.OK);
     }
 

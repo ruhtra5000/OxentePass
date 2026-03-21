@@ -9,6 +9,7 @@ import com.querydsl.core.types.Predicate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.oxentepass.oxentepass.controller.request.UsuarioEdicaoRequest;
 import com.oxentepass.oxentepass.entity.Usuario;
 import com.oxentepass.oxentepass.exceptions.RecursoDuplicadoException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
@@ -80,6 +81,26 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         repository.save(user);
     };
+
+    @Override
+    public void editarUsuarioParcial(long id, UsuarioEdicaoRequest dados) {
+        Optional<Usuario> optionalUser = repository.findById(id);
+
+        if (optionalUser.isEmpty()) {
+            throw new RecursoNaoEncontradoException("Usuário com id " + id + " não encontrado!");
+        }
+
+        Usuario user = optionalUser.get();
+
+        if (!dados.email().equals(user.getEmail()) && repository.findByEmail(dados.email()).isPresent()) {
+            throw new RecursoDuplicadoException("O e-mail " + dados.email() + " já está registrado no sistema!");
+        }
+
+        user.setNome(dados.nome());
+        user.setEmail(dados.email());
+
+        repository.save(user);
+    }
 
     @Override
     public void deletarUsuario(long id) {

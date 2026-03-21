@@ -16,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.oxentepass.oxentepass.entity.Evento;
+import com.oxentepass.oxentepass.entity.Avaliacao;
 import com.oxentepass.oxentepass.entity.Imagem;
 import com.oxentepass.oxentepass.entity.QEvento;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -60,6 +61,15 @@ public interface EventoRepository extends JpaRepository<Evento, Long>,
     */
    @Query("select i from Evento e join e.imagens i where e.id = :id")
    Page<Imagem> findImagemByEventoId(@Param("id") long id, Pageable pageable);
+
+   @Query("select a from Evento e join e.avaliacoes a where e.id = :id")
+   Page<Avaliacao> findAvaliacaoByEventoId(@Param("id") long id, Pageable pageable);
+
+   @Query("select a from Evento e join e.avaliacoes a where e.id = :idEvento and a.usuarioId = :idUsuario")
+   Optional<Avaliacao> findAvaliacaoByEventoIdAndUsuarioId(@Param("idEvento") long idEvento, @Param("idUsuario") long idUsuario);
+
+   @Query("select count(a) > 0 from Evento e join e.avaliacoes a where e.id = :idEvento and a.usuarioId = :idUsuario")
+   boolean existsAvaliacaoByEventoIdAndUsuarioId(@Param("idEvento") long idEvento, @Param("idUsuario") long idUsuario);
 
    boolean existsByPontosVendaNomeAndPontosVendaEnderecoCepAndPontosVendaEnderecoNumero(String nome, String cep, int numero);
     @Override

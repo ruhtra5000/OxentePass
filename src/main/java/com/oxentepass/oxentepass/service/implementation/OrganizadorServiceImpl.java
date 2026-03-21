@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.oxentepass.oxentepass.controller.request.OrganizadorEdicaoRequest;
 import com.oxentepass.oxentepass.controller.request.OrganizadorRequest;
 import com.oxentepass.oxentepass.entity.Organizador;
 import com.oxentepass.oxentepass.entity.Usuario;
@@ -61,6 +62,16 @@ public class OrganizadorServiceImpl implements OrganizadorService {
         Organizador organizador = buscaOrganizador(id);
         
         organizador.setCnpj(dados.cnpj());
+        organizador.setTelefone(dados.telefone());
+        organizador.setBiografia(dados.biografia());
+
+        organizadorRepository.save(organizador);
+    }
+
+    @Override
+    public void editarOrganizadorParcial(long id, OrganizadorEdicaoRequest dados) {
+        Organizador organizador = buscaOrganizador(id);
+
         organizador.setTelefone(dados.telefone());
         organizador.setBiografia(dados.biografia());
 

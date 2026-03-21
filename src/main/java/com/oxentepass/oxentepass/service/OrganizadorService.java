@@ -3,6 +3,7 @@ package com.oxentepass.oxentepass.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.oxentepass.oxentepass.controller.request.OrganizadorEdicaoRequest;
 import com.oxentepass.oxentepass.controller.request.OrganizadorRequest;
 import com.oxentepass.oxentepass.entity.Organizador;
 import com.querydsl.core.types.Predicate;
@@ -14,6 +15,7 @@ public interface OrganizadorService {
     public Organizador buscarOrganizadorPorId(long id);
 
     public void editarOrganizador(long id, OrganizadorRequest dados);
+    public void editarOrganizadorParcial(long id, OrganizadorEdicaoRequest dados);
 
     public Page<Organizador> listarOrganizadores(Pageable pageable);
     

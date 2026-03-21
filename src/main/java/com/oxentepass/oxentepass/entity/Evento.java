@@ -117,17 +117,25 @@ public abstract class Evento {
         calcularMediaAvaliacao();
     }
 
-    public void removerAvaliacao(long idAvaliacao) {
-        Avaliacao busca = null;
+    public Avaliacao buscarAvaliacao(long idAvaliacao) {
         for (Avaliacao aval : this.avaliacoes) {
-            if (aval.getId() == idAvaliacao) {
-                busca = aval;
-                break;
-            }
+            if (aval.getId() == idAvaliacao)
+                return aval;
         }
 
-        if (busca == null) 
-            throw new RecursoNaoEncontradoException("A avaliação informada não consta no evento " + this.nome + ".");
+        throw new RecursoNaoEncontradoException("A avaliação informada não consta no evento " + this.nome + ".");
+    }
+
+    public void atualizarAvaliacao(long idAvaliacao, Avaliacao avaliacaoAtualizada) {
+        Avaliacao avaliacao = buscarAvaliacao(idAvaliacao);
+        avaliacao.setComentario(avaliacaoAtualizada.getComentario());
+        avaliacao.setNota(avaliacaoAtualizada.getNota());
+
+        calcularMediaAvaliacao();
+    }
+
+    public void removerAvaliacao(long idAvaliacao) {
+        Avaliacao busca = buscarAvaliacao(idAvaliacao);
 
         avaliacoes.remove(busca);
 

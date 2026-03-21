@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.oxentepass.oxentepass.controller.response.AvaliacaoResponse;
 import com.oxentepass.oxentepass.controller.response.EventoImagemResponse;
 import com.oxentepass.oxentepass.controller.response.EventoResponse;
 import com.oxentepass.oxentepass.entity.Avaliacao;
@@ -92,6 +93,24 @@ public class EventoServiceImpl implements EventoService {
             eventos.getPageable(), 
             eventos.getTotalElements()
         );
+    }
+
+    private Page<AvaliacaoResponse> paraDTOAvaliacaoPage(Page<Avaliacao> avaliacoes) {
+        List<AvaliacaoResponse> dtos = avaliacoes.getContent()
+            .stream()
+            .map(AvaliacaoResponse::paraDTO)
+            .toList();
+
+        return new PageImpl<>(
+            dtos,
+            avaliacoes.getPageable(),
+            avaliacoes.getTotalElements()
+        );
+    }
+
+    private Avaliacao buscarAvaliacaoDoUsuario(long idEvento, long idUsuario) {
+        return eventoRepository.findAvaliacaoByEventoIdAndUsuarioId(idEvento, idUsuario)
+            .orElseThrow(() -> new RecursoNaoEncontradoException("O usuário autenticado ainda não avaliou este evento."));
     }
 
     private Imagem selecionarImagem (List<Imagem> imagens) {
@@ -324,10 +343,55 @@ public class EventoServiceImpl implements EventoService {
 
     // Avaliações
     @Override
+    public Page<AvaliacaoResponse> listarAvaliacoes(long idEvento, Pageable pageable) {
+        buscarEventoId(idEvento);
+
+        return paraDTOAvaliacaoPage(
+            eventoRepository.findAvaliacaoByEventoId(idEvento, pageable)
+        );
+    }
+
+    @Override
     public void adicionarAvaliacao(long idEvento, Avaliacao avaliacao) {
         Evento evento = buscarEventoId(idEvento);
 
+        if (eventoRepository.existsAvaliacaoByEventoIdAndUsuarioId(idEvento, avaliacao.getUsuarioId()))
+            throw new EstadoInvalidoException("O usuário autenticado já avaliou este evento.");
+
         evento.addAvaliacao(avaliacao);
+
+        eventoRepository.save(evento);
+    }
+
+    @Override
+    public AvaliacaoResponse buscarAvaliacaoUsuario(long idEvento, long idUsuario) {
+        buscarEventoId(idEvento);
+
+        return AvaliacaoResponse.paraDTO(
+            buscarAvaliacaoDoUsuario(idEvento, idUsuario)
+        );
+    }
+
+    @Override
+    @Transactional
+    public AvaliacaoResponse editarAvaliacaoUsuario(long idEvento, long idUsuario, Avaliacao avaliacao) {
+        Evento evento = buscarEventoId(idEvento);
+        Avaliacao avaliacaoExistente = buscarAvaliacaoDoUsuario(idEvento, idUsuario);
+
+        evento.atualizarAvaliacao(avaliacaoExistente.getId(), avaliacao);
+        eventoRepository.save(evento);
+
+        return AvaliacaoResponse.paraDTO(
+            evento.buscarAvaliacao(avaliacaoExistente.getId())
+        );
+    }
+
+    @Override
+    public void removerAvaliacaoUsuario(long idEvento, long idUsuario) {
+        Evento evento = buscarEventoId(idEvento);
+        Avaliacao avaliacao = buscarAvaliacaoDoUsuario(idEvento, idUsuario);
+
+        evento.removerAvaliacao(avaliacao.getId());
 
         eventoRepository.save(evento);
     }

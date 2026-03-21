@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.oxentepass.oxentepass.controller.response.AvaliacaoResponse;
+
 /**
  * @author Arthur de Sá
  * Controller para manipular Evento, através de EventoService
@@ -207,6 +209,15 @@ public class EventoController {
     }
 
     //Avaliações
+    @Operation(summary = "Listar avaliações de um Evento", description = "Retorna as avaliações vinculadas ao Evento com id especificado, com paginação")
+    @GetMapping("/{idEvento}/avaliacoes")
+    public ResponseEntity<Page<AvaliacaoResponse>> listarAvaliacoes(@PathVariable long idEvento, Pageable pageable) {
+        return new ResponseEntity<Page<AvaliacaoResponse>>(
+            eventoService.listarAvaliacoes(idEvento, pageable),
+            HttpStatus.OK
+        );
+    }
+
     @Operation(summary = "Adicionar Avaliação a Evento", description = "Cria uma nova Avaliação e a vincula ao Evento com id especificado")
     @PatchMapping("/{idEvento}/addAvaliacao")
     public ResponseEntity<String> adicionarAvaliacao(@PathVariable long idEvento, @RequestBody @Valid AvaliacaoRequest dto, HttpServletRequest request) {
@@ -220,6 +231,43 @@ public class EventoController {
         return new ResponseEntity<String>(
             "Avaliação adicionada ao evento com id " + idEvento + " com sucesso!",
             HttpStatus.CREATED
+        );
+    }
+
+    @Operation(summary = "Buscar avaliação do usuário autenticado", description = "Retorna a avaliação do usuário autenticado vinculada ao Evento com id especificado")
+    @GetMapping("/{idEvento}/minha-avaliacao")
+    public ResponseEntity<AvaliacaoResponse> buscarMinhaAvaliacao(@PathVariable long idEvento, HttpServletRequest request) {
+        Usuario usuario = authSessionService.obterUsuarioAutenticado(request);
+
+        return new ResponseEntity<AvaliacaoResponse>(
+            eventoService.buscarAvaliacaoUsuario(idEvento, usuario.getId()),
+            HttpStatus.OK
+        );
+    }
+
+    @Operation(summary = "Editar avaliação do usuário autenticado", description = "Atualiza a avaliação do usuário autenticado vinculada ao Evento com id especificado")
+    @PutMapping("/{idEvento}/minha-avaliacao")
+    public ResponseEntity<AvaliacaoResponse> editarMinhaAvaliacao(@PathVariable long idEvento, @RequestBody @Valid AvaliacaoRequest dto, HttpServletRequest request) {
+        Usuario usuario = authSessionService.obterUsuarioAutenticado(request);
+        Avaliacao avaliacao = dto.paraEntidade();
+        avaliacao.setUsuarioId(usuario.getId());
+        avaliacao.setNomeUsuario(usuario.getNome());
+
+        return new ResponseEntity<AvaliacaoResponse>(
+            eventoService.editarAvaliacaoUsuario(idEvento, usuario.getId(), avaliacao),
+            HttpStatus.OK
+        );
+    }
+
+    @Operation(summary = "Remover avaliação do usuário autenticado", description = "Remove a avaliação do usuário autenticado vinculada ao Evento com id especificado")
+    @DeleteMapping("/{idEvento}/minha-avaliacao")
+    public ResponseEntity<String> removerMinhaAvaliacao(@PathVariable long idEvento, HttpServletRequest request) {
+        Usuario usuario = authSessionService.obterUsuarioAutenticado(request);
+        eventoService.removerAvaliacaoUsuario(idEvento, usuario.getId());
+
+        return new ResponseEntity<String>(
+            "Avaliação do usuário autenticado removida do evento com id " + idEvento + " com sucesso!",
+            HttpStatus.OK
         );
     }
 

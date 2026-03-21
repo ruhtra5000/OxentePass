@@ -3,6 +3,7 @@ package com.oxentepass.oxentepass.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.oxentepass.oxentepass.controller.response.AvaliacaoResponse;
 import com.oxentepass.oxentepass.controller.response.EventoImagemResponse;
 import com.oxentepass.oxentepass.controller.response.EventoResponse;
 import com.oxentepass.oxentepass.entity.Avaliacao;
@@ -30,7 +31,11 @@ public interface EventoService extends TagManipulacao {
     public void adicionarPontoVendaNovo(long idEvento, PontoVenda pontoVenda);// Criação de novo PontoVenda 
     public void removerPontoVenda(long idEvento, long idPontoVenda);
     // Avaliações
+    public Page<AvaliacaoResponse> listarAvaliacoes(long idEvento, Pageable pageable);
     public void adicionarAvaliacao(long idEvento, Avaliacao avaliacao);
+    public AvaliacaoResponse buscarAvaliacaoUsuario(long idEvento, long idUsuario);
+    public AvaliacaoResponse editarAvaliacaoUsuario(long idEvento, long idUsuario, Avaliacao avaliacao);
+    public void removerAvaliacaoUsuario(long idEvento, long idUsuario);
     public void removerAvaliacao(long idEvento, long idAvaliacao);
     // Sub-Eventos
     public void criarSubevento(long idEvento, Evento subevento);
